@@ -1,8 +1,11 @@
-import { Heading, Page } from "@shopify/polaris";
+import { Heading, Page} from "@shopify/polaris";
+import CardTag from "./components/CardTag"
+
 
 const Index = () => (
   <Page>
-    <Heading>Shopify app with Node and React 🎉!</Heading>
+    <Heading> Welcome to Our FAQ App </Heading>
+    <CardTag/>
   </Page>
 );
 
