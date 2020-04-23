@@ -3,9 +3,10 @@ import {TextField} from '@shopify/polaris';
 
 
 
-export default function TextFieldCreateAnswer() {
-  const [value, setValue] = useState('');
-  const handleChange = useCallback((newValue) => setValue(newValue), []);
+export default function TextFieldCreateAnswer(props) {
+  const [value, setValue] = useState("");
+  const handleChange = useCallback(newValue => setValue(newValue), []);
+  props.onAnswerChange(value);
 
   function clearClicked(){
     setValue('')

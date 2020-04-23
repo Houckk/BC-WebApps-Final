@@ -1,98 +1,73 @@
-import React, { useState, useEffect }from 'react';
-import {Card, Button, Tag, List} from '@shopify/polaris';
-import TextFieldTag from './TextFieldTag'
-import TextFieldCreateQuestion from './TextFieldCreateQuestion'
-import TextFieldCreateAnswer from './TextFieldCreateAnswer'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimesCircle} from '@fortawesome/free-solid-svg-icons'
-
+import React, { useState, useEffect, useContext } from "react";
+import { Card, Button, Tag, List } from "@shopify/polaris";
+import TextFieldTag from "./TextFieldTag";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import QandA from "./QandA.js";
+import { StoreContext } from "../components/Contexts/Context";
 
 export default function CardTag() {
+  const [tagValue, setTagValue] = useState("");
+  // const [listOfTags, setListOfTags] = useState([]);
+  const [isTagButtonClicked, setTagButtonClicked] = useState(0);
 
-    const [tagValue, setTagValue] = useState('');
-    const [listOfTags, setListOfTags] = useState([]);
-    const [isTagButtonClicked, setTagButtonClicked] = useState(0)
+  let { addTag, tags, removeTag } = useContext(StoreContext);
+  tags.map(d => "logging tags: " + tags.id);
 
-    useEffect(() => {
-        console.log('useEffect has been called!');
-        console.log("TagArray1", listOfTags)
-        setListOfTags(oldTagArray => [...oldTagArray, tagValue])
-        console.log("TagArray2", listOfTags)
-        
-    },[isTagButtonClicked]);
+  // useEffect(() => {
+  //   setListOfTags(oldTagArray => [...oldTagArray, tagValue]);
+  // }, [isTagButtonClicked]);
 
-    function onChangeTagValue(newTag){
-        setTagValue(newTag)
-        // setTagButtonClicked(true);
-    }
+  function handleAddTag() {
+    setTagButtonClicked(isTagButtonClicked + 1);
+    console.log("tag value: " + tagValue);
+    addTag(tagValue);
+  }
 
-    function printClicked(){
-        console.log("Save Button Category Clicked")
-    }
+  function handleRemoveTag(props) {
+    removeTag(props);
+  }
+  function onChangeTagValue(props) {
+    setTagValue(props);
+  }
 
-    function createTagList(){
-        setTagButtonClicked(isTagButtonClicked+1)
-    }
+  return (
+    <Card title="Just Fill Out our Form and We will build your FAQ Page">
+      <Card.Section title="Create Categories to Group Your Questions Here">
+        <div>
+          <TextFieldTag onTagChange={onChangeTagValue} />
+        </div>
 
-    function removeTag(props){
-        const newArrayTags = listOfTags.filter(tag => tag !== props)
-        setListOfTags(newArrayTags)
-    }
+        <br></br>
 
+        <Button primary onClick={handleAddTag}>
+          Save
+        </Button>
+      </Card.Section>
 
-    return (
-        <Card title="Just Fill Out our Form and We will build your FAQ Page">
-            
-            <Card.Section title="Create Categories to Group Your Questions Here">
-                <div>
-                    <TextFieldTag
-                        onTagChange={onChangeTagValue}
-                    />
-                </div>
+      <Card.Section title="Your categories">
+        <div>
+          <List type="bullet">
+            {tags.map(d => (
+              <List.Item key={d.name}>
+                {d.name}
+                {"      "}
+                <FontAwesomeIcon
+                  icon={faTimesCircle}
+                  onClick={() => handleRemoveTag(d)}
+                />
+              </List.Item>
+            ))}
+          </List>
+        </div>
+      </Card.Section>
 
-                <br></br>
+      <QandA />
 
-                <Button primary onClick={createTagList}>
-                    Save
-                </Button>
-            </Card.Section>
-            
-            <Card.Section title="Your categories">
-                <div> 
-                    <List type="bullet">
-                        {listOfTags.slice(1).map((tagValue,index) => (
-                            <List.Item key={index.toString()}>
-                                {tagValue}
-                                {"      "}
-                                <FontAwesomeIcon icon={faTimesCircle} onClick={() => removeTag(tagValue)}/>
-                            </List.Item>
-                        ))}
-                    </List>
-                </div>
-            </Card.Section>
+      <Card.Section title="Drag Your Questions from above into the Corresponding Category below"></Card.Section>
 
-            <Card.Section title="Create your Questions and Answers Here">
-                <TextFieldCreateQuestion/>
-                <br></br>
-                <TextFieldCreateAnswer/>
-                <br></br>
-                <Button primary onClick={printClicked}>
-                    Save
-                </Button>
-            </Card.Section>
-
-            <Card.Section title="Your Qustions and Answers">
-
-            </Card.Section>
-
-            <Card.Section title="Drag Your Questions from above into the Corresponding Category below">
-
-            </Card.Section>
-
-            <Card.Section title="testing">
-
-            </Card.Section>
-        </Card>
-    );
+      <Card.Section title="testing"></Card.Section>
+    </Card>
+  );
 }
 
