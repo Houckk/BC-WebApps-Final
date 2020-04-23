@@ -39,7 +39,7 @@ export default function AccessDatabase(){
 
 
     docRef.update({
-        template_selected: 4
+        template_selected: 3
     })
     .then(function(){
         console.log("Document successfully updated!");
