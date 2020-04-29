@@ -15,13 +15,13 @@ export default function QandA(props) {
     tags,
     questions,
     questionBank,
-    addToQuestionBankAndQuestions,
+    addToQuestions,
     addToTagArray,
     removeFromQuestionBank
   } = useContext(StoreContext);
 
-  const [question, setQuestion] = useState([]);
-  const [answer, setAnswer] = useState([]);
+  const [tempQuestion, setTempQuestion] = useState([]);
+  const [tempAnswer, setTempAnswer] = useState([]);
   const [questionObject, setQuestionObject] = useState([]);
   console.log("tags " + tags.map(d => d.name + d.questionIds));
   console.log("Questions" + questions);
@@ -45,6 +45,11 @@ export default function QandA(props) {
 
     if (Tag[0].questionIds.length == 0) {
       console.log("length = 0");
+      console.log(questions[0].questionBank);
+      console.log(questions.filter(q => q.id == draggableId)[0].questionBank);
+      questions
+        .filter(q => q.id == draggableId)[0]
+        .questionBank.splice(0, 1, 0);
       addFirstQuestion(firstQuestion, destination.droppableId);
     } else if (source.droppableId != destination.droppableId) {
       console.log("else if");
@@ -54,39 +59,60 @@ export default function QandA(props) {
         0,
         newQuestion
       );
-      console.log(newQuestions);
       if (source.droppableId != "questionBank") {
         tags
           .filter(q => q.id == source.droppableId)[0]
           .questionIds.splice(source.index, 1);
       } else {
-        removeFromQuestionBank(newQuestions, destination.droppableId);
+        questions
+          .filter(q => q.id == draggableId)[0]
+          .questionBank.splice(0, 1, 0);
       }
     } else {
+      if (source.droppableId == "questionBank") {
+        questions
+          .filter(q => q.id == draggableId)[0]
+          .questionBank.splice(0, 1, 0);
+      }
       console.log("else");
       const sourceItem = Tag[0].questionIds[source.index];
       const destinationItem = Tag[0].questionIds[destination.index];
       Tag[0].questionIds.splice(source.index, 1);
       Tag[0].questionIds.splice(destination.index, 0, sourceItem);
-      //addToTagArray(newQuestions,destination.droppableId);
     }
   }
 
   function onQuestionChange(newQuestion) {
-    setQuestion(newQuestion);
+    setTempQuestion(newQuestion);
   }
 
   function onAnswerChange(newAnswer) {
-    setAnswer(newAnswer);
+    setTempAnswer(newAnswer);
   }
 
   function handleSave() {
     const newQuestion = {
-      id: question,
-      question: question,
-      answer: answer
+      id: tempQuestion,
+      question: tempQuestion,
+      answer: tempAnswer,
+      questionBank: [1]
     };
-    addToQuestionBankAndQuestions(newQuestion);
+    addToQuestions(newQuestion);
+  }
+
+  function pushData() {
+    db.collection("stores")
+      .doc("965NWWqucmxuxEA0Ug0D")
+      .set(tags)
+      .then(function() {
+        console.log("tags successfully written!");
+      });
+    db.collection("stores")
+      .doc("965NWWqucmxuxEA0Ug0D")
+      .set(questions)
+      .then(function() {
+        console.log("questions successfully written!");
+      });
   }
 
   return (
@@ -113,9 +139,9 @@ export default function QandA(props) {
           ))}
         </Card.Section>
       </DragDropContext>
-      <Button primary onClick={handleDone}>
+      {/* <Button onClick = {pushData}>
         Done
-      </Button>
+      </Button> */}
     </Card.Section>
   );
 }

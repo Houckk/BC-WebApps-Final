@@ -1,12 +1,35 @@
 import React, { createContext, useState } from "react";
 import initialStore from "../../Utils/InitialStore";
-import Question from "../Question";
+import * as firebase from "firebase";
+import "firebase/database";
 
 // export the context so that other components can import
 export const StoreContext = createContext();
 
+console.log("FIREBASE_FILE");
+const firebaseConfig = {
+  apiKey: process.env.API_KEY_FIREBASE,
+  authDomain: process.env.AUTH_DOMAIN_FIREBASE,
+  databaseURL: process.env.DATABASE_URL_FIREBASE,
+  //     projectId: process.env.PROJECT_ID_FIREBASE,
+  projectId: "shopify-faq-app-official",
+  storageBucket: process.env.STORAGE_BUCKET_FIREBASE,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID_FIREBASE,
+  appId: process.env.APP_ID_FIREBASE
+};
+
+// Initialize Firebase
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+var docRef = db.collection("stores").doc("965NWWqucmxuxEA0Ug0D");
+
 function StoreContextProvider(props) {
-  const [store, setStore] = useState(initialStore);
+  //const [store, setStore] = useState(initialStore);
+  const [questions, setQuestions] = useState([]);
+  const [questionBank, setQuestionBank] = useState([]);
+  const [tags, setTags] = useState([]);
 
   function addFirstQuestion(question, tagId) {
     console.log(question);
@@ -16,79 +39,66 @@ function StoreContextProvider(props) {
       name: tagId,
       questionIds: [question]
     };
-    //questionIds : [store.tags.filter(tag => (tag.id == tagId)).questionIds].concat(question)}
     console.log(Tag.questionIds);
 
-    setStore({
-      ...store,
-      tags: store.tags.filter(tag => !(tag.id == tagId)).concat(Tag),
-      questionBank: store.questionBank.filter(q => !(q.id == question.id))
-    });
+    setTags(tags.filter(tag => !(tag.id == tagId)).concat(Tag));
+    setQuestionBank(questionBank.filter(q => !(q.id == question.id)));
   }
 
   function addToTagArray(question, tagId) {
-    // console.log("Question Id: " + question.id);
-    // console.log("Question Id: " + question.question);
-    // console.log("Question Id : " + question.answer);
-
     const Tag = {
       id: tagId,
       name: tagId,
       questionIds: [question]
     };
-    //questionIds : [store.tags.filter(tag => (tag.id == tagId)).questionIds].concat(question)}
-    // console.log(Tag.questionIds);
 
-    setStore({
-      ...store,
-      tags: store.tags.filter(tag => !(tag.id == tagId)).concat(Tag),
-      questionBank: store.questionBank.filter(q => !Tag.questionIds.includes(q))
-    });
+    setTags(tags.filter(tag => !(tag.id == tagId)).concat(Tag));
+    setQuestionBank(questionBank.filter(q => !Tag.questionIds.includes(q)));
   }
 
   function addTag(tag) {
-    setStore({
-      ...store,
-      tags: store.tags.concat({
+    setTags(
+      tags.concat({
         id: tag,
         name: tag,
         questionIds: []
       })
+    );
+    docRef.update({
+      id: tag,
+      name: tag,
+      questionIds: []
     });
   }
 
   function removeTag(tag) {
-    setStore({
-      ...store,
-      tags: store.tags.filter(d => !(d.id == tag.id))
-    });
+    setTags(tags.filter(d => !(d.id == tag.id)));
   }
 
-  function addToQuestionBankAndQuestions(question) {
-    setStore({
-      ...store,
-      questions: store.questions.concat(question),
-      questionBank: store.questionBank.concat(question)
+  function addToQuestions(question) {
+    docRef.set({
+      id: question.id,
+      question: question.question,
+      answer: question.answer,
+      questionBank: question.questionBank
     });
+    setQuestions(questions.concat(question));
   }
 
   function removeFromQuestionBank(questions, tagId) {
-    console.log(questions);
-
-    setStore({
-      ...store,
-      questionBank: store.questionBank.filter(q => questions.includes(q))
-    });
+    setQuestions(questionBank.filter(q => questions.includes(q)));
   }
 
   return (
     <StoreContext.Provider
       value={{
-        ...store,
+        questions,
+        tags,
+        questionBank,
         addFirstQuestion,
         addTag,
         removeTag,
-        addToQuestionBankAndQuestions,
+        addToQuestions,
         addToTagArray,
         removeFromQuestionBank
       }}

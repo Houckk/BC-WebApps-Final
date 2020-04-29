@@ -6,7 +6,8 @@ import ListGroup from "react-bootstrap/ListGroup";
 import { StoreContext } from "../components/Contexts/Context";
 
 export default function QuestionBank(props) {
-  let { questionBank } = useContext(StoreContext);
+  let { questions } = useContext(StoreContext);
+  const questionBank = questions.filter(q => q.questionBank == 1);
 
   const id = "questionBank";
   return (
