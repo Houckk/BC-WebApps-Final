@@ -89,6 +89,39 @@ function StoreContextProvider(props) {
     setQuestions(questionBank.filter(q => questions.includes(q)));
   }
 
+  function updateOrCreateAccessToken(storeUrl, accessToken) {
+    var allStores = db.collection("stores");
+    var selectedStore = allStores.where("url", "==", storeUrl);
+
+    if (selectedStore === undefined) {
+      var newStoreRef = db.collection("stores").doc(storeUrl);
+      newStoreRef
+        .set({
+          accessToken: accessToken,
+          url: storeUrl
+        })
+        .then(function() {
+          console.log("New document written with ID: ", storeUrl);
+        })
+        .catch(function(error) {
+          console.error("Error adding document: ", error);
+        });
+    } else {
+      var oldStoreRef = db.collection("stores").doc(storeUrl);
+      oldStoreRef
+        .update({
+          accessToken: accessToken
+        })
+        .then(function() {
+          console.log("Document successfully updated!");
+        })
+        .catch(function(error) {
+          // The document probably doesn't exist.
+          console.error("Error updating document: ", error);
+        });
+    }
+  }
+
   return (
     <StoreContext.Provider
       value={{
@@ -100,7 +133,8 @@ function StoreContextProvider(props) {
         removeTag,
         addToQuestions,
         addToTagArray,
-        removeFromQuestionBank
+        removeFromQuestionBank,
+        updateOrCreateAccessToken
       }}
     >
       {props.children}
