@@ -1,5 +1,4 @@
 import React, { createContext, useState } from "react";
-import initialStore from "../../Utils/InitialStore";
 import * as firebase from "firebase";
 import "firebase/database";
 
@@ -30,31 +29,7 @@ function StoreContextProvider(props) {
   const [questions, setQuestions] = useState([]);
   const [questionBank, setQuestionBank] = useState([]);
   const [tags, setTags] = useState([]);
-
-  function addFirstQuestion(question, tagId) {
-    console.log(question);
-
-    const Tag = {
-      id: tagId,
-      name: tagId,
-      questionIds: [question]
-    };
-    console.log(Tag.questionIds);
-
-    setTags(tags.filter(tag => !(tag.id == tagId)).concat(Tag));
-    setQuestionBank(questionBank.filter(q => !(q.id == question.id)));
-  }
-
-  function addToTagArray(question, tagId) {
-    const Tag = {
-      id: tagId,
-      name: tagId,
-      questionIds: [question]
-    };
-
-    setTags(tags.filter(tag => !(tag.id == tagId)).concat(Tag));
-    setQuestionBank(questionBank.filter(q => !Tag.questionIds.includes(q)));
-  }
+  const [reset, setReset] = useState();
 
   function addTag(tag) {
     setTags(
@@ -64,29 +39,25 @@ function StoreContextProvider(props) {
         questionIds: []
       })
     );
-    docRef.update({
-      id: tag,
-      name: tag,
-      questionIds: []
-    });
+    const updated = { tags_questions: tags, questions };
+    docRef.set(updated);
   }
 
   function removeTag(tag) {
     setTags(tags.filter(d => !(d.id == tag.id)));
+    const updated = { tags_questions: tags, questions };
+    docRef.set(updated);
   }
 
   function addToQuestions(question) {
-    docRef.set({
-      id: question.id,
-      question: question.question,
-      answer: question.answer,
-      questionBank: question.questionBank
-    });
     setQuestions(questions.concat(question));
+    const updated = { tags_questions: tags, questions };
+    docRef.set(updated);
   }
 
-  function removeFromQuestionBank(questions, tagId) {
-    setQuestions(questionBank.filter(q => questions.includes(q)));
+  function setResetGlobal(props) {
+    setReset(props);
+    docRef.set({ tag_questions: tags, questions });
   }
 
   return (
@@ -94,13 +65,10 @@ function StoreContextProvider(props) {
       value={{
         questions,
         tags,
-        questionBank,
-        addFirstQuestion,
         addTag,
         removeTag,
         addToQuestions,
-        addToTagArray,
-        removeFromQuestionBank
+        setResetGlobal
       }}
     >
       {props.children}
