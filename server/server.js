@@ -58,6 +58,26 @@ function createOrUpdateAccessToken(storeUrl, token) {
   }
 }
 
+function GetAccessToken(shopUrl) {
+  var docRef = db.collection("stores").doc(shopUrl);
+
+  docRef
+    .get()
+    .then(function(doc) {
+      if (doc.exists) {
+        console.log("Document data:", doc.data());
+        console.log("Doc Data Token", doc.data().accessToken);
+        return doc.data().accessToken;
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    })
+    .catch(function(error) {
+      console.log("Error getting document:", error);
+    });
+}
+
 const port = parseInt(process.env.PORT, 10) || 8081;
 const dev = process.env.NODE_ENV !== "production";
 const app = next({
@@ -67,6 +87,7 @@ const handle = app.getRequestHandler();
 const { SHOPIFY_API_SECRET, SHOPIFY_API_KEY, SCOPES } = process.env;
 app.prepare().then(() => {
   const server = new Koa();
+  const Router = require("koa-router");
   const router = new Router();
   server.use(
     session(
@@ -108,11 +129,48 @@ app.prepare().then(() => {
       version: ApiVersion.October19
     })
   );
+
+  router.get("/api/:object", async ctx => {
+    try {
+      console.log("Inside of Try");
+      const storeAccessToken = async () => {
+        const result = await GetAccessToken(shop);
+        return result;
+      };
+
+      console.log("storeAccessToken", storeAccessToken);
+
+      const results = await fetch(
+        "https://" +
+          shop +
+          "/admin/api/2020-04/pages" +
+          ctx.params.object +
+          ".json",
+        {
+          headers: {
+            "X-Shopify-Access-Token": storeAccessToken
+          }
+        }
+      )
+        .then(response => response.json())
+        .then(json => {
+          return json;
+        });
+      ctx.body = {
+        status: "success",
+        data: results
+      };
+    } catch (err) {
+      console.log("Error in Api Call:", err);
+    }
+  });
+
   router.get("*", verifyRequest(), async ctx => {
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
     ctx.res.statusCode = 200;
   });
+
   server.use(router.allowedMethods());
   server.use(router.routes());
   server.listen(port, () => {

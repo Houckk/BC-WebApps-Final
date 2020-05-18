@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import QandA from "./QandA.js";
 import { StoreContext } from "../components/Contexts/Context";
+//import {GetPages} from './../Page-Templates/FAQ-Template-1'
+//import {GetShopUrl} from './../Page-Templates/GraphQLTest'
 
 export default function CardTag() {
   const [tagValue, setTagValue] = useState("");
@@ -66,8 +68,10 @@ export default function CardTag() {
 
       <Card.Section title="Drag Your Questions from above into the Corresponding Category below"></Card.Section>
 
-      <Card.Section title="testing"></Card.Section>
+      <Card.Section title="testing">
+        {/* <GetPages/> */}
+        {/* <GetShopUrl/> */}
+      </Card.Section>
     </Card>
   );
 }
-
