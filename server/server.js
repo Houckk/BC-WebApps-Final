@@ -130,7 +130,7 @@ app.prepare().then(() => {
     })
   );
 
-  router.get("/api/:object", async ctx => {
+  router.get("/api/pages", async ctx => {
     try {
       console.log("Inside of Try");
       const storeAccessToken = async () => {
@@ -141,11 +141,7 @@ app.prepare().then(() => {
       console.log("storeAccessToken", storeAccessToken);
 
       const results = await fetch(
-        "https://" +
-          shop +
-          "/admin/api/2020-04/pages" +
-          ctx.params.object +
-          ".json",
+        "https://bc-webapps-final.myshopify.com/admin/api/2020-04/pages.json",
         {
           headers: {
             "X-Shopify-Access-Token": storeAccessToken
@@ -154,6 +150,8 @@ app.prepare().then(() => {
       )
         .then(response => response.json())
         .then(json => {
+          console.log(json);
+
           return json;
         });
       ctx.body = {
@@ -165,11 +163,11 @@ app.prepare().then(() => {
     }
   });
 
-  router.get("*", verifyRequest(), async ctx => {
-    await handle(ctx.req, ctx.res);
-    ctx.respond = false;
-    ctx.res.statusCode = 200;
-  });
+  // router.get("*", verifyRequest(), async ctx => {
+  //   await handle(ctx.req, ctx.res);
+  //   ctx.respond = false;
+  //   ctx.res.statusCode = 200;
+  // });
 
   server.use(router.allowedMethods());
   server.use(router.routes());

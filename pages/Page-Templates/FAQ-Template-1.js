@@ -2,7 +2,7 @@ import React from "react";
 import Cookies from "js-cookie";
 
 export const GetPages = () => {
-  var fetchUrl = "api/pages";
+  var fetchUrl = "/api/pages";
   var method = "GET";
   fetch(fetchUrl, {
     method: method
