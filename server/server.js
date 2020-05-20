@@ -11,6 +11,8 @@ import * as handlers from "./handlers/index";
 import * as firebase from "firebase";
 import "firebase/database";
 
+//import {GetShopUrl} from "./../pages/Page-Templates/GraphQLTest"
+
 dotenv.config();
 const config = {
   apiKey: process.env.API_KEY_FIREBASE,
@@ -58,16 +60,19 @@ function createOrUpdateAccessToken(storeUrl, token) {
   }
 }
 
-function GetAccessToken(shopUrl) {
-  var docRef = db.collection("stores").doc(shopUrl);
-
-  docRef
+async function GetAccessToken(shopUrl) {
+  console.log("GetAccessToken is Called: ", shopUrl);
+  var docRef = await db
+    .collection("stores")
+    .doc(shopUrl)
     .get()
     .then(function(doc) {
       if (doc.exists) {
+        console.log("YAYYYY Document Exists!!!");
         console.log("Document data:", doc.data());
         console.log("Doc Data Token", doc.data().accessToken);
         return doc.data().accessToken;
+        //return 'ttesting'
       } else {
         // doc.data() will be undefined in this case
         console.log("No such document!");
@@ -76,6 +81,8 @@ function GetAccessToken(shopUrl) {
     .catch(function(error) {
       console.log("Error getting document:", error);
     });
+  console.log("DocRef Value", docRef);
+  return docRef;
 }
 
 const port = parseInt(process.env.PORT, 10) || 8081;
@@ -111,7 +118,7 @@ app.prepare().then(() => {
         const { shop, accessToken } = ctx.session;
 
         //TestFunction(shop,accessToken)
-        console.log("Server Shop:", shop);
+        console.log("ServerShop:", shop);
         console.log("Server Access Token:", accessToken);
         createOrUpdateAccessToken(shop, accessToken);
 
@@ -133,18 +140,17 @@ app.prepare().then(() => {
   router.get("/api/pages", async ctx => {
     try {
       console.log("Inside of Try");
-      const storeAccessToken = async () => {
-        const result = await GetAccessToken(shop);
-        return result;
-      };
-
-      console.log("storeAccessToken", storeAccessToken);
+      //uncomment the top line to see the error, the bottom one to test the code
+      //const storeUrl = await GetShopUrl()
+      const storeUrl = "bc-webapps-final.myshopify.com";
+      console.log("Store's Url: ", storeUrl);
+      const shopOrigin = await GetAccessToken("bc-webapps-final.myshopify.com");
 
       const results = await fetch(
         "https://bc-webapps-final.myshopify.com/admin/api/2020-04/pages.json",
         {
           headers: {
-            "X-Shopify-Access-Token": storeAccessToken
+            "X-Shopify-Access-Token": shopOrigin
           }
         }
       )
@@ -163,11 +169,11 @@ app.prepare().then(() => {
     }
   });
 
-  // router.get("*", verifyRequest(), async ctx => {
-  //   await handle(ctx.req, ctx.res);
-  //   ctx.respond = false;
-  //   ctx.res.statusCode = 200;
-  // });
+  router.get("*", verifyRequest(), async ctx => {
+    await handle(ctx.req, ctx.res);
+    ctx.respond = false;
+    ctx.res.statusCode = 200;
+  });
 
   server.use(router.allowedMethods());
   server.use(router.routes());

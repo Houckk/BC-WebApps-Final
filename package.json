@@ -55,6 +55,7 @@
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.10.1",
     "react-sortable-hoc": "^1.11.0",
+    "react-to-string": "^0.1.1",
     "styled-components": "^5.1.0"
   },
   "devDependencies": {
