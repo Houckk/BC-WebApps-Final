@@ -10,7 +10,7 @@ import session from "koa-session";
 import * as handlers from "./handlers/index";
 import * as firebase from "firebase";
 import "firebase/database";
-
+var bodyParser = require("koa-bodyparser");
 //import {GetShopUrl} from "./../pages/Page-Templates/GraphQLTest"
 
 dotenv.config();
@@ -136,48 +136,17 @@ app.prepare().then(() => {
       version: ApiVersion.October19
     })
   );
+  server.use(bodyParser());
 
-  // router.get("/api/pages", async ctx => {
-  //   try {
-  //     console.log("Inside of Try");
-  //     //uncomment the top line to see the error, the bottom one to test the code
-  //     //const storeUrl = await GetShopUrl()
-  //     const storeUrl = "bc-webapps-final.myshopify.com";
-  //     console.log("Store's Url: ", storeUrl);
-  //     const shopOrigin = await GetAccessToken("bc-webapps-final.myshopify.com");
-
-  //     const results = await fetch(
-  //       "https://bc-webapps-final.myshopify.com/admin/api/2020-04/pages.json",
-  //       {
-  //         headers: {
-  //           "X-Shopify-Access-Token": shopOrigin
-  //         }
-  //       }
-  //     )
-  //       .then(response => response.json())
-  //       .then(json => {
-  //         console.log(json);
-
-  //         return json;
-  //       });
-  //     ctx.body = {
-  //       status: "success",
-  //       data: results
-  //     };
-  //   } catch (err) {
-  //     console.log("Error in Api Call:", err);
-  //   }
-  // });
-
-  router.post("/api/pages", async (ctx, req) => {
+  router.post("/api/pages", async ctx => {
     try {
       console.log("Inside of Try");
       //uncomment the top line to see the error, the bottom one to test the code
       //const storeUrl = await GetShopUrl()
       const storeUrl = "bc-webapps-final.myshopify.com";
       console.log("Store's Url: ", storeUrl);
-      console.log(ctx);
-      console.log(req.body);
+      //console.log(ctx);
+      //console.log(req.body);
 
       const shopOrigin = await GetAccessToken("bc-webapps-final.myshopify.com");
 
@@ -187,14 +156,8 @@ app.prepare().then(() => {
         "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"
       );
       myHeaders.append("Content-Type", "application/json");
-
-      var raw = JSON.stringify({
-        page: {
-          title: "Warranty information",
-          body_html:
-            "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>"
-        }
-      });
+      //console.log(ctx.request.body)
+      var raw = JSON.stringify(ctx.request.body);
 
       var requestOptions = {
         method: "POST",
@@ -211,10 +174,10 @@ app.prepare().then(() => {
         .then(result => console.log(result))
         .catch(error => console.log("error", error));
 
-      ctx.body = {
-        status: "success",
-        data: results
-      };
+      // ctx.body = {
+      //   status: "success",
+      //   data: res
+      // };
     } catch (err) {
       console.log("Error in Api Call:", err);
     }
