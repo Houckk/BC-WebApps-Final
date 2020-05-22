@@ -137,29 +137,80 @@ app.prepare().then(() => {
     })
   );
 
-  router.get("/api/pages", async ctx => {
+  // router.get("/api/pages", async ctx => {
+  //   try {
+  //     console.log("Inside of Try");
+  //     //uncomment the top line to see the error, the bottom one to test the code
+  //     //const storeUrl = await GetShopUrl()
+  //     const storeUrl = "bc-webapps-final.myshopify.com";
+  //     console.log("Store's Url: ", storeUrl);
+  //     const shopOrigin = await GetAccessToken("bc-webapps-final.myshopify.com");
+
+  //     const results = await fetch(
+  //       "https://bc-webapps-final.myshopify.com/admin/api/2020-04/pages.json",
+  //       {
+  //         headers: {
+  //           "X-Shopify-Access-Token": shopOrigin
+  //         }
+  //       }
+  //     )
+  //       .then(response => response.json())
+  //       .then(json => {
+  //         console.log(json);
+
+  //         return json;
+  //       });
+  //     ctx.body = {
+  //       status: "success",
+  //       data: results
+  //     };
+  //   } catch (err) {
+  //     console.log("Error in Api Call:", err);
+  //   }
+  // });
+
+  router.post("/api/pages", async (ctx, req) => {
     try {
       console.log("Inside of Try");
       //uncomment the top line to see the error, the bottom one to test the code
       //const storeUrl = await GetShopUrl()
       const storeUrl = "bc-webapps-final.myshopify.com";
       console.log("Store's Url: ", storeUrl);
+      console.log(ctx);
+      console.log(req.body);
+
       const shopOrigin = await GetAccessToken("bc-webapps-final.myshopify.com");
 
-      const results = await fetch(
-        "https://bc-webapps-final.myshopify.com/admin/api/2020-04/pages.json",
-        {
-          headers: {
-            "X-Shopify-Access-Token": shopOrigin
-          }
-        }
-      )
-        .then(response => response.json())
-        .then(json => {
-          console.log(json);
+      var myHeaders = new Headers();
+      myHeaders.append(
+        "X-Shopify-Access-Token",
+        "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"
+      );
+      myHeaders.append("Content-Type", "application/json");
 
-          return json;
-        });
+      var raw = JSON.stringify({
+        page: {
+          title: "Warranty information",
+          body_html:
+            "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>"
+        }
+      });
+
+      var requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+      };
+
+      fetch(
+        "https://bc-webapps-final.myshopify.com/admin/api/2020-04/pages.json",
+        requestOptions
+      )
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log("error", error));
+
       ctx.body = {
         status: "success",
         data: results
