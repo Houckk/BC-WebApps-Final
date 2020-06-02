@@ -27,6 +27,8 @@
     "@fortawesome/free-regular-svg-icons": "^5.13.0",
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/react-fontawesome": "^0.1.9",
+    "@material-ui/core": "^4.10.0",
+    "@material-ui/icons": "^4.9.1",
     "@shopify/app-bridge-react": "^1.21.2",
     "@shopify/app-cli-node-generator-helper": "^1.1.2",
     "@shopify/koa-shopify-auth": "^3.1.60",

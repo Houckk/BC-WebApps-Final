@@ -85,6 +85,37 @@ async function GetAccessToken(shopUrl) {
   return docRef;
 }
 
+function createOrUpdateThemeID(storeUrl, themeID) {
+  var allStores = db.collection("stores");
+  var selectedStore = allStores.where("url", "==", storeUrl);
+  if (selectedStore === undefined) {
+    var newStoreRef = db.collection("stores").doc(storeUrl);
+    newStoreRef
+      .set({
+        themeID: themeID
+      })
+      .then(function() {
+        console.log("New document written with ID: ", storeUrl);
+      })
+      .catch(function(error) {
+        console.error("Error adding document: ", error);
+      });
+  } else {
+    var docRef = db.collection("stores").doc(storeUrl);
+    docRef
+      .update({
+        themeID: themeID
+      })
+      .then(function() {
+        console.log("Document successfully updated!");
+      })
+      .catch(function(error) {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+      });
+  }
+}
+
 const port = parseInt(process.env.PORT, 10) || 8081;
 const dev = process.env.NODE_ENV !== "production";
 const app = next({
@@ -173,11 +204,84 @@ app.prepare().then(() => {
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log("error", error));
+    } catch (err) {
+      console.log("Error in Api Call:", err);
+    }
+  });
 
-      // ctx.body = {
-      //   status: "success",
-      //   data: res
-      // };
+  //Template routes
+
+  router.get("/liquid/all_themes", async ctx => {
+    try {
+      console.log("Inside of Try");
+      const storeUrl = "bc-webapps-final.myshopify.com";
+      console.log("Store's Url: ", storeUrl);
+      const shopOrigin = await GetAccessToken("bc-webapps-final.myshopify.com");
+
+      const results = await fetch(
+        "https://bc-webapps-final.myshopify.com/admin/api/2020-04/themes.json",
+        {
+          headers: {
+            "X-Shopify-Access-Token": shopOrigin
+          }
+        }
+      )
+        .then(response => response.json())
+        .then(json => {
+          console.log("Parsed Get Response", json);
+
+          var i;
+          var currentThemeID = [];
+          for (i = 0; i < json.themes.length; i++) {
+            if (json.themes[i].role === "main") {
+              currentThemeID.push(json.themes[i].id);
+            }
+          }
+          createOrUpdateThemeID(
+            "bc-webapps-final.myshopify.com",
+            currentThemeID
+          );
+          return json;
+        });
+      ctx.body = {
+        status: "success",
+        data: results
+      };
+    } catch (err) {
+      console.log("Error in Api Call:", err);
+    }
+  });
+
+  router.put("/liquid/new_template", async ctx => {
+    try {
+      console.log("Inside of Try Put of New Template");
+      //uncomment the top line to see the error, the bottom one to test the code
+      //const storeUrl = await GetShopUrl()
+      const storeUrl = "bc-webapps-final.myshopify.com";
+      console.log("Store's Url: ", storeUrl);
+
+      const shopOrigin = await GetAccessToken("bc-webapps-final.myshopify.com");
+
+      var myHeaders = new Headers();
+      myHeaders.append("X-Shopify-Access-Token", shopOrigin);
+      myHeaders.append("Content-Type", "application/json");
+      var raw = JSON.stringify(ctx.request.body);
+      console.log("Raw", raw);
+
+      var requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+      };
+
+      fetch(
+        "https://bc-webapps-final.myshopify.com/admin/api/2020-04/themes/94604886061/assets.json",
+        requestOptions
+      )
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log("error", error));
     } catch (err) {
       console.log("Error in Api Call:", err);
     }

@@ -6,6 +6,7 @@ import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import QandA from "./QandA.js";
 import { StoreContext } from "../components/Contexts/Context";
 import { GetPages } from "../Page-Templates/FAQ-Template-1";
+import { GetPages2 } from "../Page-Templates/FAQ-Template-2";
 //import {GetShopUrl} from './../Page-Templates/GraphQLTest'
 
 export default function CardTag() {
