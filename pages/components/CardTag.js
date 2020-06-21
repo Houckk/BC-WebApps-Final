@@ -7,6 +7,7 @@ import QandA from "./QandA.js";
 import { StoreContext } from "../components/Contexts/Context";
 import { GetPages } from "../Page-Templates/FAQ-Template-1";
 import { GetPages2 } from "../Page-Templates/FAQ-Template-2";
+import GetPages4 from "../Page-Templates/FAQ-Template-4";
 //import {GetShopUrl} from './../Page-Templates/GraphQLTest'
 
 export default function CardTag() {
@@ -33,7 +34,9 @@ export default function CardTag() {
   function onChangeTagValue(props) {
     setTagValue(props);
   }
-
+  function handleButton() {
+    GetPages4(tags);
+  }
   return (
     <Card title="Just Fill Out our Form and We will build your FAQ Page">
       <Card.Section title="Create Categories to Group Your Questions Here">
@@ -70,7 +73,8 @@ export default function CardTag() {
       <Card.Section title="Drag Your Questions from above into the Corresponding Category below"></Card.Section>
 
       <Card.Section title="testing">
-        <GetPages />
+        <Button onClick={handleButton}>Save Questions</Button>
+        {/* <GetPages /> */}
         {/* <GetShopUrl/> */}
       </Card.Section>
     </Card>

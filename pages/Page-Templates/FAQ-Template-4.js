@@ -1,6 +1,7 @@
-export default function FAQTemplate4() {
-  let { tags } = useContext(StoreContext);
+import React, { useContext } from "react";
+import { StoreContext } from "../components/Contexts/Context";
 
+export default function FAQTemplate4(tags) {
   var fetchUrl = "/liquid/new_template";
   var method = "PUT";
   fetch(fetchUrl, {
@@ -10,7 +11,7 @@ export default function FAQTemplate4() {
     },
     body: JSON.stringify({
       asset: {
-        key: "templates/my-FAQ-Template-4.faq.liquid",
+        key: "templates/page.my-FAQ-Template-4.faq.liquid",
         value: `
             <div class="page-width">
                 <div>
@@ -20,18 +21,20 @@ export default function FAQTemplate4() {
                 </div>
                 <div class="grid">
                     <div class="grid__item medium-up--five-sixths medium-up--push-one-twelfth">
-                        ${tags.map(
-                          tag => `
+                        ${tags
+                          .map(
+                            (tag, index) => `
                         <p>
-                            <button class="btn btn btn-block" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            <button class="btn btn btn-block" data-toggle="collapse" href="#collapseExample${index}" role="button" aria-expanded="false" aria-controls="collapseExmaple">
                                 ${tag.name}
                             </button>
                         </p>
-                        <div class="collapse" id="collapseExample">
+                        <div class="collapse" id="collapseExample${index}">
                             <div class="card card-body">
-                                ${tag.questionIds.map(
-                                  q =>
-                                    `
+                                ${tag.questionIds
+                                  .map(
+                                    q =>
+                                      `
                                         <h4>
                                             ${q.question}
                                         </h4>
@@ -39,12 +42,14 @@ export default function FAQTemplate4() {
                                             ${q.answer}
                                         </p>
                                     `
-                                )}
+                                  )
+                                  .join("")}
 
                             </div>
                         </div>
                         `
-                        )}
+                          )
+                          .join("")}
                     </div>
                 </div>
             </div>
