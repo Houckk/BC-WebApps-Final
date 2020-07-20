@@ -6,9 +6,19 @@ import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import QandA from "./QandA.js";
 import { StoreContext } from "../components/Contexts/Context";
 import SelectedTemplate from "./TemplateSelectToggle";
-import { GetPages } from "../Page-Templates/FAQ-Template-1";
-import { GetPages2 } from "../Page-Templates/FAQ-Template-2";
+import FAQTemplate1, {
+  FAQTemplate1JS,
+  FAQTemplate1CSS
+} from "../Page-Templates/FAQ-Template-1";
+import FAQTemplate2, {
+  FAQTemplate2CSS,
+  FAQTemplate2Redirects
+} from "../Page-Templates/FAQ-Template-2";
 import GetPages4 from "../Page-Templates/FAQ-Template-4";
+import FAQTemplate3, {
+  FAQTemplate3JS,
+  FAQTemplate3CSS
+} from "../Page-Templates/FAQ-Template-3";
 //import {GetShopUrl} from './../Page-Templates/GraphQLTest'
 
 export default function CardTag() {
@@ -45,12 +55,25 @@ export default function CardTag() {
   }
   function handleButton() {
     if (userSelectedTemplate === "Template-1") {
-      //function for posting template 1 here
+      console.log("Tags Being Passed*********************", tags);
+      FAQTemplate1(tags);
+      FAQTemplate1CSS();
+      FAQTemplate1JS();
     } else if (userSelectedTemplate === "Template-2") {
-      //function for posting template 2 here
-      console.log("Option 2 would run");
+      console.log("Tags Being Passed*********************", tags);
+      FAQTemplate2(tags);
+
+      tags.map(
+        tag => `
+        ${FAQTemplate2Redirects(tag.name, tag.questionIds)}
+      `
+      );
+      FAQTemplate2Redirects(tags);
+      FAQTemplate2CSS();
     } else if (userSelectedTemplate === "Template-3") {
-      //function for posting template 3 here
+      FAQTemplate3(tags);
+      FAQTemplate3CSS();
+      FAQTemplate3JS();
     } else if (userSelectedTemplate === "Template-4") {
       GetPages4(tags);
     } else {
