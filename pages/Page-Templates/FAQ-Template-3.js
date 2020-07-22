@@ -84,21 +84,9 @@ export default function FAQTemplate3(tags, photoUrls, photoTypes) {
   <div class="row">
     <div class="col4-categories tag-divider">
       <ol id="list-group">
-        <li class="list list-active">
-          ${tags[0].name}
-        <li/>
-        ${tags
-          .slice(1)
-          .map(
-            tag => `
-        ${console.log("Array of Sliced Tags", tags.slice(1))}
-        ${console.log("LI Tag Name", tag.name)}
-        <li class="list">
-          ${tag.name}
-        </li>
-        `
-          )
-          .join("")}
+        
+
+      
       </ol>
     </div>
       <div class="col4">
