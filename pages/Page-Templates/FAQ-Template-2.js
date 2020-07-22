@@ -161,9 +161,7 @@ export function FAQTemplate2CSS() {
   return null;
 }
 
-export function FAQTemplate2Redirects(tagName, tagQA) {
-  console.log("TagName: ", tagName);
-  console.log("tagQA: ", tagQA);
+export function FAQTemplate2Redirects(tag) {
   var fetchUrl = "/liquid/new_template";
   var method = "PUT";
   fetch(fetchUrl, {
@@ -173,7 +171,8 @@ export function FAQTemplate2Redirects(tagName, tagQA) {
     },
     body: JSON.stringify({
       asset: {
-        key: "templates/asdfasfasdf",
+        key:
+          "templates/page.my-FAQ-Template-2." + tag.name + ".redirect.liquid",
         value: ` 
         <div class="page-width">
         {{'faq2.css' | asset_url | stylesheet_tag}}
@@ -181,9 +180,9 @@ export function FAQTemplate2Redirects(tagName, tagQA) {
           <div class="grid__item medium-up--five-sixths medium-up--push-one-twelfth">
             <div class="section-header text-center">
               <div class="title-content">
-                <h1>${tagName}</h1>
+                <h1>${tag.name}</h1>
                  <h1>
-                  <a href="/pages/faq-template-2">
+                  <a href="/pages/custom-faq2">
               Return to FAQ Home
                   </a>
                 </h1>
@@ -193,30 +192,37 @@ export function FAQTemplate2Redirects(tagName, tagQA) {
             <div class="rte body-content">
               {{'https://www.w3schools.com/w3css/4/w3.css' | stylesheet_tag }}
               
-              ${tagQA
-                .map(
-                  (q, index) => `
+              
                 <div class="card">
                   <ol class="plain-list">
+                  ${tag.questionIds
+                    .map(
+                      (q, index) => `
                     <li>
-                        <button onclick="document.getElementById('question${index}').style.display='block'" class="w3-button ">${q.question}</button>
+                        <button onclick="document.getElementById('question${index}').style.display='block'" class="w3-button">${q.question}</button>
                     </li>
+                  `
+                    )
+                    .join("")}
                   </ol>
                 </div>
 
-                <div id="question1" class="w3-modal">
-                  <div class="w3-modal-content">
-                    <div class="w3-container">
-                      <span onclick="document.getElementById('question${index}').style.display='none'" class="w3-button w3-display-topright">&times;</span>
-                      <h3>${q.question}</h3>
-                      <p>${q.answer}</p>
-                      <br/>
+                ${tag.questionIds
+                  .map(
+                    (q, index) => `
+                  <div id="question${index}" class="w3-modal">
+                    <div class="w3-modal-content">
+                      <div class="w3-container">
+                        <span onclick="document.getElementById('question${index}').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                        <h3>${q.question}</h3>
+                        <p>${q.answer}</p>
+                        <br/>
+                      </div>
                     </div>
                   </div>
-                </div>
-              `
-                )
-                .join("")}
+                `
+                  )
+                  .join("")}
             </div>
           </div>
         </div>

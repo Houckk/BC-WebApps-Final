@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import QandA from "./QandA.js";
 import { StoreContext } from "../components/Contexts/Context";
+import DropZoneWithImageFileUpload from "./ImageUpload";
 import SelectedTemplate from "./TemplateSelectToggle";
 import FAQTemplate1, {
   FAQTemplate1JS,
@@ -17,7 +18,8 @@ import FAQTemplate2, {
 import GetPages4 from "../Page-Templates/FAQ-Template-4";
 import FAQTemplate3, {
   FAQTemplate3JS,
-  FAQTemplate3CSS
+  FAQTemplate3CSS,
+  FAQTemplate3Pictures
 } from "../Page-Templates/FAQ-Template-3";
 //import {GetShopUrl} from './../Page-Templates/GraphQLTest'
 
@@ -29,6 +31,11 @@ export default function CardTag() {
   const [userSelectedTemplate, setUserSelectedTemplate] = useState(
     "Template-1"
   );
+  const [provideUserMessage, setProvideUserMessage] = useState(
+    userSelectedTemplate + " does not allow image uploads"
+  );
+  const [photoUrls, setPhotoUrls] = useState([]);
+  const [photoTypes, setPhotoTypes] = useState([]);
 
   let { addTag, tags, removeTag } = useContext(StoreContext);
   tags.map(d => "logging tags: " + tags.id);
@@ -37,8 +44,22 @@ export default function CardTag() {
   //   setListOfTags(oldTagArray => [...oldTagArray, tagValue]);
   // }, [isTagButtonClicked]);
 
+  function handlePhotoUrls(photos, types) {
+    setPhotoUrls(photos);
+    setPhotoTypes(types);
+  }
+
   function handleTemplateChange(templateNumber) {
     setUserSelectedTemplate(templateNumber);
+    if (templateNumber === "Template-3") {
+      setProvideUserMessage(
+        "Please provide at least two photos for your website's faq page. To ensure best results, please use photos with a minimum height of 250 pixels."
+      );
+    } else {
+      setProvideUserMessage(
+        userSelectedTemplate + " does not allow image uploads"
+      );
+    }
   }
 
   function handleAddTag() {
@@ -60,20 +81,20 @@ export default function CardTag() {
       FAQTemplate1CSS();
       FAQTemplate1JS();
     } else if (userSelectedTemplate === "Template-2") {
-      console.log("Tags Being Passed*********************", tags);
       FAQTemplate2(tags);
 
-      tags.map(
-        tag => `
-        ${FAQTemplate2Redirects(tag.name, tag.questionIds)}
-      `
-      );
-      FAQTemplate2Redirects(tags);
+      for (var i = 0; i < tags.length; i++) {
+        FAQTemplate2Redirects(tags[i]);
+      }
+
       FAQTemplate2CSS();
     } else if (userSelectedTemplate === "Template-3") {
-      FAQTemplate3(tags);
+      FAQTemplate3(tags, photoUrls, photoTypes);
       FAQTemplate3CSS();
       FAQTemplate3JS();
+      for (var i = 0; i < photoUrls.length; i++) {
+        FAQTemplate3Pictures(photoUrls[i], photoTypes[i]);
+      }
     } else if (userSelectedTemplate === "Template-4") {
       GetPages4(tags);
     } else {
@@ -121,7 +142,15 @@ export default function CardTag() {
         <br />
         Template Selected: {userSelectedTemplate}
         <br />
+        {provideUserMessage}
+        <DropZoneWithImageFileUpload
+          selectedTemplate={userSelectedTemplate}
+          photos={handlePhotoUrls}
+          url={photoUrls}
+        />
         __________________________
+        <br />
+        {photoUrls}
       </Card.Section>
 
       <Card.Section title="testing">

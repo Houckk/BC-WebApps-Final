@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { StoreContext } from "../components/Contexts/Context";
 
-export default function FAQTemplate3(tags) {
+export default function FAQTemplate3(tags, photoUrls, photoTypes) {
   var fetchUrl = "/liquid/new_template";
   var method = "PUT";
   fetch(fetchUrl, {
@@ -34,30 +34,38 @@ export default function FAQTemplate3(tags) {
           <!-- Indicators -->
           <ol class="carousel-indicators w3-display-bottommiddle carousel-sliders">
             <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-            <li data-target="#myCarousel" data-slide-to="1"></li>
-            <li data-target="#myCarousel" data-slide-to="2"></li>
+            ${photoTypes
+              .slice(1)
+              .map(
+                index => `
+              <li data-target="#myCarousel" data-slide-to=${index + 1}></li>
+            `
+              )
+              .join("")}
           </ol>
 
     <!-- Wrapper for slides -->
     <div class="carousel-inner">
       <div class="item active">
         <div class="image-border">
-          <img src={{"Shopify_Test_Image.png" | asset_url }}>
+          <img  class="image-content" src={{ ${
+            photoTypes[0]
+          }| asset_url }}>      
         </div>
       </div>
 
+      ${photoTypes
+        .slice(1)
+        .map(
+          photoName => `
       <div class="item">
         <div class="image-border">
-          <img src={{"iceland2.jpg" | asset_url }}>
+          <img class="image-content" src={{${photoName} | asset_url }}>
         </div>
       </div>
-
-      <div class="item">
-        <div class="image-border">
-          <img src={{"iceland3.jpg" | asset_url }}>
-        </div>
-      </div>
-    </div>
+      `
+        )
+        .join("")}
 
     <!-- Left and right controls -->
     <a class="left carousel-control" href="#myCarousel" data-slide="prev">
@@ -70,6 +78,9 @@ export default function FAQTemplate3(tags) {
     </a>
   </div>
   
+  <br/>
+  <br/>
+
   <div class="row">
     <div class="col4-categories tag-divider">
       <ol id="list-group">
@@ -80,6 +91,8 @@ export default function FAQTemplate3(tags) {
           .slice(1)
           .map(
             tag => `
+        ${console.log("Array of Sliced Tags", tags.slice(1))}
+        ${console.log("LI Tag Name", tag.name)}
         <li class="list">
           ${tag.name}
         </li>
@@ -104,8 +117,6 @@ export default function FAQTemplate3(tags) {
           </ol>
         </div>
         ${console.log("Tags Sliced", tags.slice(1))}
-
-
         ${tags
           .slice(1)
           .map(
@@ -137,19 +148,25 @@ export default function FAQTemplate3(tags) {
         
       </div>
 
-      ${tag.questionIds
+      ${tags
         .map(
-          (q, qIndex) => `
-      <div id="question${qIndex}-${tag.name}" class="w3-modal">
-          <div class="w3-modal-content">
-            <div class="w3-container center">
-              <span onclick="document.getElementById('question${qIndex}-${tag.name}').style.display='none'" class="w3-button w3-display-topright">&times;</span>
-              <h3>${q.question}</h3>
-              <p>${q.answer}</p>
-              <br/>
+          tag => `
+        ${tag.questionIds
+          .map(
+            (q, qIndex) => `
+          <div id="question${qIndex}-${tag.name}" class="w3-modal">
+            <div class="w3-modal-content">
+              <div class="w3-container center">
+                <span onclick="document.getElementById('question${qIndex}-${tag.name}').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                <h3>${q.question}</h3>
+                <p>${q.answer}</p>
+                <br/>
+              </div>
             </div>
           </div>
-        </div>
+        `
+          )
+          .join("")}
       `
         )
         .join("")}
@@ -331,6 +348,13 @@ export function FAQTemplate3CSS() {
         width:100%;
         height:250px;
         object-fit:cover;
+        background-repeat: no-repeat;
+      }
+
+      .image-content{
+        width: 100%;
+        height: auto;  
+        min-height: 250px !important;
       }
       
       .list-button{
@@ -418,6 +442,26 @@ for (var i = 0; i < listItem.length; i++) {
 
       
         `
+      }
+    })
+  })
+    .then(response => response.json())
+    .then(json => console.log(json.body));
+  return null;
+}
+
+export function FAQTemplate3Pictures(pictureUrls, pictureTypes) {
+  var fetchUrl = "/liquid/new_template";
+  var method = "PUT";
+  fetch(fetchUrl, {
+    method: method,
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      asset: {
+        key: "assets/" + pictureTypes,
+        attachment: pictureUrls
       }
     })
   })
