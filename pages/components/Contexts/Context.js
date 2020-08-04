@@ -1,6 +1,7 @@
 import React, { createContext, useState } from "react";
 import * as firebase from "firebase";
 import "firebase/database";
+import "firebase/auth";
 
 // export the context so that other components can import
 export const StoreContext = createContext();
@@ -23,13 +24,15 @@ if (!firebase.apps.length) {
 }
 const db = firebase.firestore();
 var docRef = db.collection("stores").doc("965NWWqucmxuxEA0Ug0D");
-
 function StoreContextProvider(props) {
   //const [store, setStore] = useState(initialStore);
   const [questions, setQuestions] = useState([]);
   const [questionBank, setQuestionBank] = useState([]);
   const [tags, setTags] = useState([]);
   const [reset, setReset] = useState();
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
+  const [currentPage, setCurrentPage] = useState("login");
 
   function addTag(tag) {
     setTags(
@@ -68,7 +71,13 @@ function StoreContextProvider(props) {
         addTag,
         removeTag,
         addToQuestions,
-        setResetGlobal
+        setResetGlobal,
+        username,
+        setUsername,
+        password,
+        setPassword,
+        setCurrentPage,
+        currentPage
       }}
     >
       {props.children}

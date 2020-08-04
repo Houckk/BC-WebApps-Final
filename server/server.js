@@ -27,6 +27,7 @@ const config = {
 
 firebase.initializeApp(config);
 var db = firebase.firestore();
+const auth = firebase.auth();
 
 function createOrUpdateAccessToken(storeUrl, token) {
   var allStores = db.collection("stores");
@@ -287,14 +288,47 @@ app.prepare().then(() => {
     }
   });
 
+  router.put("/api/signup", async ctx => {
+    console.log(ctx.request.body.email);
+    var email = ctx.request.body.email;
+    var password = ctx.request.body.password;
+    const user = {
+      email
+    };
+    auth.createUserWithEmailAndPassword(email, password).then(() => {
+      db.collection("users").add(user);
+    });
+    ctx.set("Content-Type", "text/plain");
+    ctx.body = "success";
+  });
+
+  router.put("/api/login", async ctx => {
+    const email = ctx.request.body.email;
+    const password = ctx.request.body.password;
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then(response => {
+        db.collection("users")
+          .where("email", "==", response.user.email)
+          .get()
+          .then(snapshot => {
+            //setCurrentUserId(snapshot.docs[0].data().id); //first document's data = user info
+            ctx.body = "success";
+          });
+      })
+      .catch(error => {
+        ctx.body = "failure";
+      });
+  });
+
   router.get("*", verifyRequest(), async ctx => {
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
     ctx.res.statusCode = 200;
   });
 
-  server.use(router.allowedMethods());
   server.use(router.routes());
+  server.use(router.allowedMethods());
   server.listen(port, () => {
     console.log(`> Ready on http://localhost:${port}`);
   });
