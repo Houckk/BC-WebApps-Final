@@ -10,9 +10,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { StoreContext } from "../components/Contexts/Context";
 
 export default function QandA(props) {
-  let { tags, questions, addToQuestions, setResetGlobal } = useContext(
-    StoreContext
-  );
+  let {
+    tags,
+    questions,
+    setQuestions,
+    setResetGlobal,
+    currentUser
+  } = useContext(StoreContext);
 
   const [tempQuestion, setTempQuestion] = useState([]);
   const [tempAnswer, setTempAnswer] = useState([]);
@@ -83,6 +87,20 @@ export default function QandA(props) {
 
   function onAnswerChange(newAnswer) {
     setTempAnswer(newAnswer);
+  }
+
+  function addToQuestions(question) {
+    console.log(tags);
+    setQuestions(questions.concat(question));
+    const updated = { tags: tags };
+    console.log(updated);
+    fetch("/api/updateTags", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ tags: updated, user: currentUser })
+    }).then(response => response.json());
   }
 
   function handleSave() {

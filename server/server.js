@@ -302,23 +302,55 @@ app.prepare().then(() => {
     ctx.body = "success";
   });
 
+  router.put("/api/updateTags", async ctx => {
+    const tags = ctx.request.body.tags;
+    const user = ctx.request.body.user;
+    console.log(tags);
+    console.log("user: " + user);
+    await db
+      .collection("users")
+      .doc(user)
+      .set(tags);
+    ctx.body = "success";
+  });
+
+  router.put("/api/getTags", async ctx => {
+    const user = ctx.request.body.email;
+    console.log("user: " + user);
+    var data;
+    await db
+      .collection("users")
+      .doc(user)
+      .get()
+      .then(snapshot => {
+        ctx.body = snapshot.data();
+      });
+  });
+
   router.put("/api/login", async ctx => {
     const email = ctx.request.body.email;
     const password = ctx.request.body.password;
-    auth
+    await auth
       .signInWithEmailAndPassword(email, password)
-      .then(response => {
-        db.collection("users")
+      .then(async response => {
+        await db
+          .collection("users")
           .where("email", "==", response.user.email)
           .get()
           .then(snapshot => {
-            //setCurrentUserId(snapshot.docs[0].data().id); //first document's data = user info
-            ctx.body = "success";
+            ctx.body = {
+              status: "success",
+              user: snapshot.docs[0].data().email
+            };
           });
       })
       .catch(error => {
-        ctx.body = "failure";
+        ctx.body = { status: "failure", user: "2nd" };
       });
+  });
+
+  router.put("/api/resetPassword", async ctx => {
+    await auth.sendPasswordResetEmail(ctx.request.body.email);
   });
 
   router.get("*", verifyRequest(), async ctx => {

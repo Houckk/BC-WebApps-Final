@@ -33,34 +33,66 @@ function StoreContextProvider(props) {
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
   const [currentPage, setCurrentPage] = useState("login");
+  const [currentUser, setCurrentUser] = useState();
 
-  function addTag(tag) {
-    setTags(
+  async function addTag(tag) {
+    console.log(tag);
+    await setTags(
       tags.concat({
         id: tag,
         name: tag,
         questionIds: []
       })
     );
+    console.log(tags);
+
     const updated = { tags_questions: tags, questions };
-    docRef.set(updated);
+    console.log("updated: ");
+    console.log(updated);
+    fetch("/api/updateTags", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ tags: updated, user: currentUser })
+    }).then(response => response.json());
   }
 
   function removeTag(tag) {
     setTags(tags.filter(d => !(d.id == tag.id)));
     const updated = { tags_questions: tags, questions };
-    docRef.set(updated);
+    fetch("updateTags", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ tags: updated, user: currentUser })
+    }).then(response => response.json());
   }
 
-  function addToQuestions(question) {
-    setQuestions(questions.concat(question));
-    const updated = { tags_questions: tags, questions };
-    docRef.set(updated);
+  async function addToQuestions(question) {
+    await setQuestions(questions.concat(question));
+    const updated = { tags: tags };
+    console.log(updated);
+    fetch("/api/updateTags", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ tags: updated, user: currentUser })
+    }).then(response => response.json());
   }
 
   function setResetGlobal(props) {
     setReset(props);
-    docRef.set({ tag_questions: tags, questions });
+    const updated = { tags: tags };
+    fetch("/api/updateTags", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ tags: updated, user: currentUser })
+    }).then(response => response.json());
   }
 
   return (
@@ -68,16 +100,20 @@ function StoreContextProvider(props) {
       value={{
         questions,
         tags,
+        setTags,
         addTag,
         removeTag,
         addToQuestions,
         setResetGlobal,
+        setQuestions,
         username,
         setUsername,
         password,
         setPassword,
         setCurrentPage,
-        currentPage
+        currentPage,
+        currentUser,
+        setCurrentUser
       }}
     >
       {props.children}

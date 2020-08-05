@@ -9,12 +9,10 @@ import { StoreContext } from "../components/Contexts/Context";
 
 export default function Column(props) {
   let { addQuestion, tags, questionBank, questions } = useContext(StoreContext);
-  console.log(props.tagQuestions);
 
   const corQuestions = questions.filter(
     q => props.tagQuestions.map(d => d.id) == q.id
   );
-  console.log(corQuestions);
 
   return (
     <div>

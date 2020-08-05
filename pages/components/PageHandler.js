@@ -8,7 +8,6 @@ import { StoreContext } from "./Contexts/Context";
 
 export default function PageHandler() {
   let { currentPage } = useContext(StoreContext);
-  console.log(currentPage);
 
   return (
     <div>

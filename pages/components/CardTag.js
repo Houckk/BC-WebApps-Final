@@ -37,7 +37,9 @@ export default function CardTag() {
   const [photoUrls, setPhotoUrls] = useState([]);
   const [photoTypes, setPhotoTypes] = useState([]);
 
-  let { addTag, tags, removeTag } = useContext(StoreContext);
+  let { setTags, tags, removeTag, currentUser, questions, addTag } = useContext(
+    StoreContext
+  );
   tags.map(d => "logging tags: " + tags.id);
 
   // useEffect(() => {
@@ -64,7 +66,6 @@ export default function CardTag() {
 
   function handleAddTag() {
     setTagButtonClicked(isTagButtonClicked + 1);
-    console.log("tag value: " + tagValue);
     addTag(tagValue);
   }
 
@@ -76,7 +77,6 @@ export default function CardTag() {
   }
   function handleButton() {
     if (userSelectedTemplate === "Template-1") {
-      console.log("Tags Being Passed*********************", tags);
       FAQTemplate1(tags);
       FAQTemplate1CSS();
       FAQTemplate1JS();
