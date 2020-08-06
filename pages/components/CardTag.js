@@ -15,7 +15,12 @@ import FAQTemplate2, {
   FAQTemplate2CSS,
   FAQTemplate2Redirects
 } from "../Page-Templates/FAQ-Template-2";
-import GetPages4 from "../Page-Templates/FAQ-Template-4";
+import FAQTemplate4JS, {
+  FAQTemplate4CSS
+} from "../Page-Templates/FAQ-Template-4";
+import FAQTemplate5JS, {
+  FAQTemplate5CSS
+} from "../Page-Templates/FAQ-Template-5";
 import FAQTemplate3, {
   FAQTemplate3JS,
   FAQTemplate3CSS,
@@ -96,9 +101,11 @@ export default function CardTag() {
         FAQTemplate3Pictures(photoUrls[i], photoTypes[i]);
       }
     } else if (userSelectedTemplate === "Template-4") {
-      GetPages4(tags);
-    } else {
-      //function for posting template 3 here
+      FAQTemplate4JS();
+      FAQTemplate4CSS();
+    } else if (userSelectedTemplate === "Template-5") {
+      FAQTemplate5JS();
+      FAQTemplate5CSS();
     }
   }
   return (
