@@ -101,10 +101,10 @@ export default function CardTag() {
         FAQTemplate3Pictures(photoUrls[i], photoTypes[i]);
       }
     } else if (userSelectedTemplate === "Template-4") {
-      FAQTemplate4JS();
+      FAQTemplate4JS(tags);
       FAQTemplate4CSS();
     } else if (userSelectedTemplate === "Template-5") {
-      FAQTemplate5JS();
+      FAQTemplate5JS(tags);
       FAQTemplate5CSS();
     }
   }
