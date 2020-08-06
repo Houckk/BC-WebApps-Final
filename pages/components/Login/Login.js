@@ -9,11 +9,7 @@ import {
   Modal
 } from "@shopify/polaris";
 import { StoreContext } from "../Contexts/Context";
-import { set } from "js-cookie";
-import { separateOperations } from "graphql";
 import Reset from "./Reset";
-import css from "./reset.module.css";
-import { schemaDefinitionNotAloneMessage } from "graphql/validation/rules/LoneSchemaDefinition";
 
 export default function Login() {
   let {
