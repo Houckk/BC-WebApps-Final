@@ -79,19 +79,14 @@ export default function Login() {
             type="password"
             value={password}
           />
-          {loading ? (
-            <Stack alignment="center" vertical={true}>
-              <Spinner
-                accessibilityLabel="Spinner example"
-                size="large"
-                color="inkLightest"
-              />
-            </Stack>
-          ) : (
-            <Button onClick={() => login(email, password)} primary fullWidth>
-              Log In
-            </Button>
-          )}
+          <Button
+            onClick={() => login(email, password)}
+            primary
+            fullWidth
+            loading={loading}
+          >
+            Log In
+          </Button>
           <Stack alignment="center" vertical={true}>
             <div style={{ color: "red" }}>{error}</div>
           </Stack>
