@@ -13,178 +13,145 @@ export default function FAQTemplate3(tags, photoUrls, photoTypes) {
       asset: {
         key: "templates/page.my-FAQ-Template-3.faq.liquid",
         value: `
-{{'faq3.css' | asset_url | stylesheet_tag}}
-<div class="page-width">
-  <div class="grid">
-    <div class="grid__item medium-up--five-sixths medium-up--push-one-twelfth">
-      <div class="section-header text-center">
-        <h1>{{ page.title }}</h1>
-      </div>
 
-     
-        <div class="rte">
-          
-          {{'https://www.w3schools.com/w3css/4/w3.css' | stylesheet_tag }}
-          {{'https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css' | stylesheet_tag }}
-          
-          
-    <!--         Carousel Content -->
-
-        <div id="myCarousel" class="carousel slide" data-ride="carousel">
-          <!-- Indicators -->
-          <ol class="carousel-indicators w3-display-bottommiddle carousel-sliders">
-            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-            ${photoTypes
-              .slice(1)
-              .map(
-                index => `
-              <li data-target="#myCarousel" data-slide-to=${index + 1}></li>
-            `
-              )
-              .join("")}
-          </ol>
-
-    <!-- Wrapper for slides -->
-    <div class="carousel-inner">
-      <div class="item active">
-        <div class="image-border">
-          <img  class="image-content" src={{ ${
-            photoTypes[0]
-          }| asset_url }}>      
-        </div>
-      </div>
-
-      ${photoTypes
-        .slice(1)
-        .map(
-          photoName => `
-      <div class="item">
-        <div class="image-border">
-          <img class="image-content" src={{${photoName} | asset_url }}>
-        </div>
-      </div>
-      `
-        )
-        .join("")}
-
-    <!-- Left and right controls -->
-    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
-      <span class="glyphicon glyphicon-chevron-left"></span>
-      <span class="sr-only">Previous</span>
-    </a>
-    <a class="right carousel-control" href="#myCarousel" data-slide="next">
-      <span class="glyphicon glyphicon-chevron-right"></span>
-      <span class="sr-only">Next</span>
-    </a>
-  </div>
-  
-  <br/>
-  <br/>
-
-  <div class="row">
-    <div class="col4-categories tag-divider">
-      <ol id="list-group">
-        <li class="list list-active">
-          ${tags[0].name}
-        <li/>
-        ${tags
-          .slice(1)
-          .map(
-            tag => `
-        ${console.log("Array of Sliced Tags", tags.slice(1))}
-        ${console.log("LI Tag Name", tag.name)}
-        <li class="list">
-          ${tag.name}
-        </li>
-        `
-          )
-          .join("")}
-      </ol>
-    </div>
-      <div class="col4">
-        <div id="${tags[0].name}" class="questions revealed">
-          <ol class="plain-list">
-          ${console.log("Tag 0 Question ID's", tags[0].questionIds)}
-          ${tags[0].questionIds
-            .map(
-              (q, qIndex) => `
-            <li class="list-divider list-buttton-divider">
-              <button onclick="document.getElementById('question${qIndex}-${tags[0].name}').style.display='inline-block'" class="w3-button list-button">${q.question}</button>
-            </li>
-          `
-            )
-            .join("")} 
-          </ol>
-        </div>
-        ${console.log("Tags Sliced", tags.slice(1))}
-        ${tags
-          .slice(1)
-          .map(
-            tag => `
-        <div id=${tag.name} class="questions hidden">
-          <ol class="plain-list">
-          ${console.log("Tag.questionIds", tag.questionIds)}
-          ${tag.questionIds
-            .map(
-              (q, qIndex) => `
-            <li class="list-divider">
-              ${console.log("Tag NAme", tag.name)}
-              <button onclick="document.getElementById('question${qIndex}-${
-                tag.name
-              }').style.display='inline-block'" class="w3-button">${
-                q.question
-              }</button>
-            </li>
-          `
-            )
-            .join("")}	
-          </ol>
-        </div>
-        `
-          )
-          .join("")}
-
-
+        {{'faq3.css' | asset_url | stylesheet_tag}}
+        <div class="page-width">
+          <div class="grid">
+            <div class="grid__item medium-up--five-sixths medium-up--push-one-twelfth">
+              <div class="section-header text-center">
+                <h1>{{ page.title }}</h1>
+              </div>
         
-      </div>
+              <div class="rte">
+                
+                {{'https://www.w3schools.com/w3css/4/w3.css' | stylesheet_tag }}
+                
+                <div class="image">
+                  <img class="image-content" src={{'${photoTypes}' | asset_url }}>    
+                </div>
 
-      ${tags
-        .map(
-          tag => `
-        ${tag.questionIds
-          .map(
-            (q, qIndex) => `
-          <div id="question${qIndex}-${tag.name}" class="w3-modal">
-            <div class="w3-modal-content">
-              <div class="w3-container center">
-                <span onclick="document.getElementById('question${qIndex}-${tag.name}').style.display='none'" class="w3-button w3-display-topright">&times;</span>
-                <h3>${q.question}</h3>
-                <p>${q.answer}</p>
                 <br/>
+                <br/>
+      
+                <div class="row">
+                  
+                  <div class="col4-categories tag-divider">
+                    <ol id="list-group">
+                      <li class="list list-active">
+                        ${tags[0].name} 
+                      </li>
+                      ${tags
+                        .slice(1)
+                        .map(
+                          (tag, index) => `
+                        <li class="list">
+                          ${tag.name} 
+                        </li>
+                      `
+                        )
+                        .join("")}
+                    </ol>
+                  </div>
+                  
+                  <div class="col4">
+                    <div id="Shipping" class="questions revealed">
+                      <ol class="plain-list">
+
+                      ${tags[0].questionIds
+                        .map(
+                          (q, index) => `
+                        <li class="list-divider list-buttton-divider">
+                          <button onclick="document.getElementById('question${index}-${tags[0].name.replace(
+                            /\s+/g,
+                            ""
+                          )} ').style.display='inline-block'" class="w3-button list-button">${
+                            q.question
+                          }</button>
+                        </li>
+                      `
+                        )
+                        .join("")}
+            
+                      </ol>
+                    </div>
+
+
+                    ${tags
+                      .slice(1)
+                      .map(
+                        tag => `
+                      <div id=${tag.name.replace(
+                        /\s+/g,
+                        ""
+                      )}  class="questions hidden">
+                          <ol class="plain-list">
+                            
+                          
+                            ${tag.questionIds
+                              .map(
+                                (q, index) => `
+                            <li class="list-divider list-buttton-divider">
+                              <button onclick="document.getElementById('question${index}-${tag.name.replace(
+                                  /\s+/g,
+                                  ""
+                                )} ').style.display='inline-block'" class="w3-button list-button">${
+                                  q.question
+                                }</button>
+                            </li>
+                            `
+                              )
+                              .join("")}
+                          
+    
+                          </ol>
+                      </div>
+                    `
+                      )
+                      .join("")}
+
+                  </div>
+                </div>
+                
+                ${tags
+                  .map(
+                    tag => `
+                  ${tag.questionIds
+                    .map(
+                      (q, index) => `
+                    <div id="question${index}-${tag.name.replace(
+                        /\s+/g,
+                        ""
+                      )} " class="w3-modal">
+                      <div class="w3-modal-content">
+                        <div class="w3-container center">
+                          <span onclick="document.getElementById('question${index}-${tag.name.replace(
+                        /\s+/g,
+                        ""
+                      )} ').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                          <h3>${q.question}</h3>
+                          <p>${q.answer}</p>
+                          <br/>
+                        </div>
+                      </div>
+                    </div>
+                  `
+                    )
+                    .join("")}
+                `
+                  )
+                  .join("")}
+                
+                 {{'ToggleClasses.js' | asset_url | script_tag }}   
+                 {{'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js' | script_tag }}
+                 {{'https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js' | script_tag }}
+              
               </div>
             </div>
           </div>
-        `
-          )
-          .join("")}
-      `
-        )
-        .join("")}
-             
+        </div>
+        
       
-    </div>
-  
-               
-         {{'ToggleClasses.js' | asset_url | script_tag }}   
-         {{'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js' | script_tag }}
-         {{'https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js' | script_tag }}
-      
-      </div>
-    </div>
-  </div>
-</div>
-
-      
+        
         `
       }
     })
@@ -206,6 +173,7 @@ export function FAQTemplate3CSS() {
       asset: {
         key: "assets/faq3.css",
         value: `
+       
         .row{
           display: flex;
           flex-wrap: wrap;
@@ -344,13 +312,16 @@ export function FAQTemplate3CSS() {
          margin-top:50px !important; 
       }
       
-      .image-border{
-        width:100%;
-        height:250px;
-        object-fit:cover;
-        background-repeat: no-repeat;
+      
+      
+      .image{
+        display: block;
+        overflow: hidden;
+        width: 100%;
+        height: 250px;
+        background-color: red;
       }
-
+      
       .image-content{
         width: 100%;
         height: auto;  
@@ -386,8 +357,7 @@ export function FAQTemplate3CSS() {
         margin-top: 30% !important;
         margin-bottom: 30% !important;
         
-      }      
-      
+      }
         `
       }
     })
@@ -419,7 +389,7 @@ for (var i = 0; i < listItem.length; i++) {
   this.className += " list-active";
     
     
-   	var selectedElement = document.getElementsByClassName("list list-active")[0].innerText;
+   	var selectedElement = document.getElementsByClassName("list list-active")[0].innerText.replace(/\s+/g, '');
   
   	var selectedElement2 = document.getElementsByClassName("list list-active");
   

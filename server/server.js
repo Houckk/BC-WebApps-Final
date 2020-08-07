@@ -10,8 +10,8 @@ import session from "koa-session";
 import * as handlers from "./handlers/index";
 import * as firebase from "firebase";
 import "firebase/database";
-var bodyParser = require("koa-bodyparser");
-//import {GetShopUrl} from "./../pages/Page-Templates/GraphQLTest"
+
+var bodyParser = require("koa-bodyparser"); //import {GetShopUrl} from "./../pages/Page-Templates/GraphQLTest"
 
 dotenv.config();
 const config = {
@@ -24,7 +24,6 @@ const config = {
   messagingSenderId: process.env.MESSAGING_SENDER_ID_FIREBASE,
   appId: process.env.APP_ID_FIREBASE
 };
-
 firebase.initializeApp(config);
 var db = firebase.firestore();
 const auth = firebase.auth();
@@ -32,6 +31,7 @@ const auth = firebase.auth();
 function createOrUpdateAccessToken(storeUrl, token) {
   var allStores = db.collection("stores");
   var selectedStore = allStores.where("url", "==", storeUrl);
+
   if (selectedStore === undefined) {
     var newStoreRef = db.collection("stores").doc(storeUrl);
     newStoreRef
@@ -72,8 +72,7 @@ async function GetAccessToken(shopUrl) {
         console.log("YAYYYY Document Exists!!!");
         console.log("Document data:", doc.data());
         console.log("Doc Data Token", doc.data().accessToken);
-        return doc.data().accessToken;
-        //return 'ttesting'
+        return doc.data().accessToken; //return 'ttesting'
       } else {
         // doc.data() will be undefined in this case
         console.log("No such document!");
@@ -89,6 +88,7 @@ async function GetAccessToken(shopUrl) {
 function createOrUpdateThemeID(storeUrl, themeID) {
   var allStores = db.collection("stores");
   var selectedStore = allStores.where("url", "==", storeUrl);
+
   if (selectedStore === undefined) {
     var newStoreRef = db.collection("stores").doc(storeUrl);
     newStoreRef
@@ -126,7 +126,9 @@ const handle = app.getRequestHandler();
 const { SHOPIFY_API_SECRET, SHOPIFY_API_KEY, SCOPES } = process.env;
 app.prepare().then(() => {
   const server = new Koa();
+
   const Router = require("koa-router");
+
   const router = new Router();
   server.use(
     session(
@@ -147,19 +149,19 @@ app.prepare().then(() => {
       async afterAuth(ctx) {
         //Auth token and shop available in session
         //Redirect to shop upon auth
-        const { shop, accessToken } = ctx.session;
+        const { shop, accessToken } = ctx.session; //TestFunction(shop,accessToken)
 
-        //TestFunction(shop,accessToken)
         console.log("ServerShop:", shop);
         console.log("Server Access Token:", accessToken);
         createOrUpdateAccessToken(shop, accessToken);
-
         ctx.cookies.set("shopOrigin", shop, {
           httpOnly: false,
           secure: true,
           sameSite: "none"
         });
-        ctx.redirect("/");
+        server.context.client = await handlers.createClient(shop, accessToken);
+
+        await handlers.getSubscriptionUrl(ctx);
       }
     })
   );
@@ -169,35 +171,27 @@ app.prepare().then(() => {
     })
   );
   server.use(bodyParser());
-
   router.post("/api/pages", async ctx => {
     try {
-      console.log("Inside of Try");
-      //uncomment the top line to see the error, the bottom one to test the code
+      console.log("Inside of Try"); //uncomment the top line to see the error, the bottom one to test the code
       //const storeUrl = await GetShopUrl()
+
       const storeUrl = "bc-webapps-final.myshopify.com";
-      console.log("Store's Url: ", storeUrl);
-      //console.log(ctx);
+      console.log("Store's Url: ", storeUrl); //console.log(ctx);
       //console.log(req.body);
 
       const shopOrigin = await GetAccessToken("bc-webapps-final.myshopify.com");
-
       var myHeaders = new Headers();
-      myHeaders.append(
-        "X-Shopify-Access-Token",
-        "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"
-      );
-      myHeaders.append("Content-Type", "application/json");
-      //console.log(ctx.request.body)
-      var raw = JSON.stringify(ctx.request.body);
+      myHeaders.append("X-Shopify-Access-Token", shopOrigin);
+      myHeaders.append("Content-Type", "application/json"); //console.log(ctx.request.body)
 
+      var raw = JSON.stringify(ctx.request.body);
       var requestOptions = {
         method: "POST",
         headers: myHeaders,
         body: raw,
         redirect: "follow"
       };
-
       fetch(
         "https://bc-webapps-final.myshopify.com/admin/api/2020-04/pages.json",
         requestOptions
@@ -208,9 +202,7 @@ app.prepare().then(() => {
     } catch (err) {
       console.log("Error in Api Call:", err);
     }
-  });
-
-  //Template routes
+  }); //Template routes
 
   router.get("/liquid/all_themes", async ctx => {
     try {
@@ -218,7 +210,6 @@ app.prepare().then(() => {
       const storeUrl = "bc-webapps-final.myshopify.com";
       console.log("Store's Url: ", storeUrl);
       const shopOrigin = await GetAccessToken("bc-webapps-final.myshopify.com");
-
       const results = await fetch(
         "https://bc-webapps-final.myshopify.com/admin/api/2020-04/themes.json",
         {
@@ -230,14 +221,15 @@ app.prepare().then(() => {
         .then(response => response.json())
         .then(json => {
           console.log("Parsed Get Response", json);
-
           var i;
           var currentThemeID = [];
+
           for (i = 0; i < json.themes.length; i++) {
             if (json.themes[i].role === "main") {
               currentThemeID.push(json.themes[i].id);
             }
           }
+
           createOrUpdateThemeID(
             "bc-webapps-final.myshopify.com",
             currentThemeID
@@ -252,30 +244,25 @@ app.prepare().then(() => {
       console.log("Error in Api Call:", err);
     }
   });
-
   router.put("/liquid/new_template", async ctx => {
     try {
-      console.log("Inside of Try Put of New Template");
-      //uncomment the top line to see the error, the bottom one to test the code
+      console.log("Inside of Try Put of New Template"); //uncomment the top line to see the error, the bottom one to test the code
       //const storeUrl = await GetShopUrl()
+
       const storeUrl = "bc-webapps-final.myshopify.com";
       console.log("Store's Url: ", storeUrl);
-
       const shopOrigin = await GetAccessToken("bc-webapps-final.myshopify.com");
-
       var myHeaders = new Headers();
       myHeaders.append("X-Shopify-Access-Token", shopOrigin);
       myHeaders.append("Content-Type", "application/json");
       var raw = JSON.stringify(ctx.request.body);
       console.log("Raw", raw);
-
       var requestOptions = {
         method: "PUT",
         headers: myHeaders,
         body: raw,
         redirect: "follow"
       };
-
       fetch(
         "https://bc-webapps-final.myshopify.com/admin/api/2020-04/themes/94604886061/assets.json",
         requestOptions
@@ -287,7 +274,6 @@ app.prepare().then(() => {
       console.log("Error in Api Call:", err);
     }
   });
-
   router.put("/api/signup", async ctx => {
     console.log(ctx.request.body.email);
     var email = ctx.request.body.email;
@@ -298,10 +284,10 @@ app.prepare().then(() => {
     auth.createUserWithEmailAndPassword(email, password).then(() => {
       db.collection("users").add(user);
     });
-    ctx.set("Content-Type", "text/plain");
+    server.context.client = await handlers.createClient(shop, accessToken);
+    await handlers.getSubscriptionUrl(ctx);
     ctx.body = "success";
   });
-
   router.put("/api/updateTags", async ctx => {
     const tags = ctx.request.body.tags;
     const user = ctx.request.body.user;
@@ -313,7 +299,6 @@ app.prepare().then(() => {
       .set(tags);
     ctx.body = "success";
   });
-
   router.put("/api/getTags", async ctx => {
     const user = ctx.request.body.email;
     console.log("user: " + user);
@@ -326,7 +311,6 @@ app.prepare().then(() => {
         ctx.body = snapshot.data();
       });
   });
-
   router.put("/api/login", async ctx => {
     const email = ctx.request.body.email;
     const password = ctx.request.body.password;
@@ -345,20 +329,20 @@ app.prepare().then(() => {
           });
       })
       .catch(error => {
-        ctx.body = { status: "failure", user: "2nd" };
+        ctx.body = {
+          status: "failure",
+          user: "2nd"
+        };
       });
   });
-
   router.put("/api/resetPassword", async ctx => {
     await auth.sendPasswordResetEmail(ctx.request.body.email);
   });
-
   router.get("*", verifyRequest(), async ctx => {
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
     ctx.res.statusCode = 200;
   });
-
   server.use(router.routes());
   server.use(router.allowedMethods());
   server.listen(port, () => {

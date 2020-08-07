@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Card, Button, Tag, List } from "@shopify/polaris";
+import React, { useState, useEffect, useContext, useCallback } from "react";
+import { Card, Button, Tag, List, Frame, Toast } from "@shopify/polaris";
 import TextFieldTag from "./TextFieldTag";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
@@ -13,7 +13,8 @@ import FAQTemplate1, {
 } from "../Page-Templates/FAQ-Template-1";
 import FAQTemplate2, {
   FAQTemplate2CSS,
-  FAQTemplate2Redirects
+  FAQTemplate2Redirects,
+  FAQTemplate2Pages
 } from "../Page-Templates/FAQ-Template-2";
 import FAQTemplate4JS, {
   FAQTemplate4CSS
@@ -47,6 +48,18 @@ export default function CardTag() {
   );
   tags.map(d => "logging tags: " + tags.id);
 
+  const [active, setActive] = useState(false);
+
+  const toggleActive = useCallback(() => setActive(active => !active), []);
+
+  const toastContent =
+    "Your FAQ page is being built! Publish your new page by following our guide or simply create a new page with the extension page.my-FAQ-" +
+    userSelectedTemplate +
+    ".faq.liquid";
+
+  const toastMarkup = active ? (
+    <Toast content={toastContent} onDismiss={toggleActive} duration={10000} />
+  ) : null;
   // useEffect(() => {
   //   setListOfTags(oldTagArray => [...oldTagArray, tagValue]);
   // }, [isTagButtonClicked]);
@@ -90,6 +103,7 @@ export default function CardTag() {
 
       for (var i = 0; i < tags.length; i++) {
         FAQTemplate2Redirects(tags[i]);
+        FAQTemplate2Pages(tags[i]);
       }
 
       FAQTemplate2CSS();
@@ -107,64 +121,69 @@ export default function CardTag() {
       FAQTemplate5JS(tags);
       FAQTemplate5CSS();
     }
+
+    toggleActive();
   }
   return (
-    <Card title="Just Fill Out our Form and We will build your FAQ Page">
-      <Card.Section title="Create Categories to Group Your Questions Here">
-        <div>
-          <TextFieldTag onTagChange={onChangeTagValue} />
-        </div>
+    <Frame>
+      <Card title="Just Fill Out our Form and We will build your FAQ Page">
+        <Card.Section title="Create Categories to Group Your Questions Here">
+          <div>
+            <TextFieldTag onTagChange={onChangeTagValue} />
+          </div>
 
-        <br></br>
+          <br></br>
 
-        <Button primary onClick={handleAddTag}>
-          Save
-        </Button>
-      </Card.Section>
+          <Button primary onClick={handleAddTag}>
+            Save
+          </Button>
+        </Card.Section>
 
-      <Card.Section title="Your categories">
-        <div>
-          <List type="bullet">
-            {tags.map(d => (
-              <List.Item key={d.name}>
-                {d.name}
-                {"      "}
-                <FontAwesomeIcon
-                  icon={faTimesCircle}
-                  onClick={() => handleRemoveTag(d)}
-                />
-              </List.Item>
-            ))}
-          </List>
-        </div>
-      </Card.Section>
+        <Card.Section title="Your categories">
+          <div>
+            <List type="bullet">
+              {tags.map(d => (
+                <List.Item key={d.name}>
+                  {d.name}
+                  {"      "}
+                  <FontAwesomeIcon
+                    icon={faTimesCircle}
+                    onClick={() => handleRemoveTag(d)}
+                  />
+                </List.Item>
+              ))}
+            </List>
+          </div>
+        </Card.Section>
 
-      <QandA />
+        <QandA />
 
-      <Card.Section title="Drag Your Questions from above into the Corresponding Category below"></Card.Section>
+        <Card.Section title="Drag Your Questions from above into the Corresponding Category below"></Card.Section>
 
-      <Card.Section title="Preview Templates">
-        <SelectedTemplate template={handleTemplateChange} />
-        __________________________
-        <br />
-        Template Selected: {userSelectedTemplate}
-        <br />
-        {provideUserMessage}
-        <DropZoneWithImageFileUpload
-          selectedTemplate={userSelectedTemplate}
-          photos={handlePhotoUrls}
-          url={photoUrls}
-        />
-        __________________________
-        <br />
-        {photoUrls}
-      </Card.Section>
+        <Card.Section title="Preview Templates">
+          <SelectedTemplate template={handleTemplateChange} />
+          __________________________
+          <br />
+          Template Selected: {userSelectedTemplate}
+          <br />
+          {provideUserMessage}
+          <DropZoneWithImageFileUpload
+            selectedTemplate={userSelectedTemplate}
+            photos={handlePhotoUrls}
+            url={photoUrls}
+          />
+          __________________________
+          <br />
+          {photoUrls}
+        </Card.Section>
 
-      <Card.Section title="testing">
-        <Button onClick={handleButton}>Save Questions</Button>
-        {/* <GetPages /> */}
-        {/* <GetShopUrl/> */}
-      </Card.Section>
-    </Card>
+        <Card.Section title="testing">
+          <Button onClick={handleButton}>Save Questions</Button>
+          {toastMarkup}
+          {/* <GetPages /> */}
+          {/* <GetShopUrl/> */}
+        </Card.Section>
+      </Card>
+    </Frame>
   );
 }
