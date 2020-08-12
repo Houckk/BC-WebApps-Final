@@ -6,7 +6,8 @@ function Signup(props) {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { setCurrentPage } = useContext(StoreContext);
+  const { setCurrentPage, setCurrentUser } = useContext(StoreContext);
+  const [loading, setLoading] = useState();
 
   const handleEmail = useCallback(newValue => setEmail(newValue), []);
   const handlePassword = useCallback(newValue => setPassword(newValue), []);
@@ -27,6 +28,7 @@ function Signup(props) {
   function signup(email, password, id) {
     var fetchUrl = "/api/signup";
     var method = "PUT";
+    setLoading(true);
     fetch(fetchUrl, {
       method: method,
       headers: {
@@ -34,11 +36,18 @@ function Signup(props) {
       },
       body: JSON.stringify({ email: email, password: password })
     })
-      .then(response => response.text())
+      .then(response => response.json())
       .then(data => {
-        if (data == "success") {
+        console.log(data);
+        if (!data.error) {
           setCurrentPage("main");
+          setCurrentUser(email);
+        } else {
+          setError(
+            "There was an error creating your account. This email might already be in use."
+          );
         }
+        setLoading(false);
       });
   }
 
@@ -46,6 +55,7 @@ function Signup(props) {
     <Card sectioned title="Sign Up">
       <FormLayout onSubmit={handleSubmit}>
         <TextField
+          label="Email"
           type="email"
           name="email"
           placeholder="Email"
@@ -53,13 +63,20 @@ function Signup(props) {
           onChange={handleEmail}
         />
         <TextField
+          label="Password"
           type="password"
           name="password"
           placeholder="Password"
           value={password}
           onChange={handlePassword}
         />
-        <Button type="submit" primary fullWidth onClick={handleSubmit}>
+        <Button
+          type="submit"
+          loading={loading}
+          primary
+          fullWidth
+          onClick={handleSubmit}
+        >
           Sign Up
         </Button>
         <Stack alignment="center" vertical={true}>
@@ -69,7 +86,9 @@ function Signup(props) {
           </div>
         </Stack>
       </FormLayout>
-      <div>{error}</div>
+      <Stack alignment="center" vertical={true}>
+        <div style={{ color: "red", paddingTop: "5px" }}>{error}</div>
+      </Stack>
     </Card>
   );
 }

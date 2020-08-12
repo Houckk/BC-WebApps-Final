@@ -27,6 +27,7 @@ import FAQTemplate3, {
   FAQTemplate3CSS,
   FAQTemplate3Pictures
 } from "../Page-Templates/FAQ-Template-3";
+import SelectPreview from "./Preview/SelectPreview";
 //import {GetShopUrl} from './../Page-Templates/GraphQLTest'
 
 export default function CardTag() {
@@ -124,6 +125,7 @@ export default function CardTag() {
 
     toggleActive();
   }
+
   return (
     <Frame>
       <Card title="Just Fill Out our Form and We will build your FAQ Page">
@@ -175,11 +177,14 @@ export default function CardTag() {
           __________________________
           <br />
           {photoUrls}
+          <SelectPreview
+            userSelectedTemplate={userSelectedTemplate}
+            tags={tags}
+          />
         </Card.Section>
 
         <Card.Section title="testing">
           <Button onClick={handleButton}>Save Questions</Button>
-          {toastMarkup}
           {/* <GetPages /> */}
           {/* <GetShopUrl/> */}
         </Card.Section>

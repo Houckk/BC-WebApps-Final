@@ -293,28 +293,28 @@ app.prepare().then(() => {
       email
     };
     console.log("Current Shopify Token: ", shopifyToken);
-    auth.createUserWithEmailAndPassword(email, password).then(() => {
-      //db.collection("users").add(user);
-      db.collection("users")
-        .doc(email)
-        .set({
-          email: email,
-          accessToken: shopifyToken,
-          tags: []
-        });
-    });
-    ctx.set("Content-Type", "text/plain");
+    await auth
+      .createUserWithEmailAndPassword(email, password)
+      .then(async () => {
+        //db.collection("users").add(user);
+        await db
+          .collection("users")
+          .doc(email)
+          .set({
+            email: email,
+            accessToken: shopifyToken,
+            tags: []
+          });
+        ctx.body = { error: false };
+      })
+      .catch(err => (ctx.body = { error: true }));
     //server.context.client = await handlers.createClient(shop, accessToken);
     //await handlers.getSubscriptionUrl(ctx);
-    ctx.body = "success";
   });
   router.put("/api/updateTags", async ctx => {
     const tags = ctx.request.body.tags;
-    const user = ctx.request.body.user;
-    var email = ctx.request.body.email;
-    console.log("Email: ", email);
-    console.log(tags);
-    console.log("user: " + user);
+    const email = ctx.request.body.user;
+
     //await db.collection("users").doc(user).update(tags);
     await db
       .collection("users")

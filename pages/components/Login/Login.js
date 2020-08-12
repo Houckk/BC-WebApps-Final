@@ -9,11 +9,7 @@ import {
   Modal
 } from "@shopify/polaris";
 import { StoreContext } from "../Contexts/Context";
-import { set } from "js-cookie";
-import { separateOperations } from "graphql";
 import Reset from "./Reset";
-import css from "./reset.module.css";
-import { schemaDefinitionNotAloneMessage } from "graphql/validation/rules/LoneSchemaDefinition";
 
 export default function Login() {
   let {
@@ -83,19 +79,15 @@ export default function Login() {
             type="password"
             value={password}
           />
-          {loading ? (
-            <Stack alignment="center" vertical={true}>
-              <Spinner
-                accessibilityLabel="Spinner example"
-                size="large"
-                color="inkLightest"
-              />
-            </Stack>
-          ) : (
-            <Button onClick={() => login(email, password)} primary fullWidth>
-              Log In
-            </Button>
-          )}
+          <Button
+            onClick={() => login(email, password)}
+            primary
+            fullWidth
+            loading={loading}
+            type="submit"
+          >
+            Log In
+          </Button>
           <Stack alignment="center" vertical={true}>
             <div style={{ color: "red" }}>{error}</div>
           </Stack>
