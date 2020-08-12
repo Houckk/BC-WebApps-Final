@@ -84,6 +84,7 @@ export default function Login() {
             primary
             fullWidth
             loading={loading}
+            type="submit"
           >
             Log In
           </Button>

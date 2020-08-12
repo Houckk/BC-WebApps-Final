@@ -39,7 +39,7 @@ export default function FAQTemplate2(tags) {
           .map(
             (tag, index) => `
           <div class="col4">
-            <a href="/pages/${tag.name}">
+            <a href="/pages/${tag.name.replace(/\s+/g, "")}">
               <button class="card">             
                 ${tag.name}
               </button>
@@ -172,7 +172,9 @@ export function FAQTemplate2Redirects(tag) {
     body: JSON.stringify({
       asset: {
         key:
-          "templates/page.my-FAQ-Template-2." + tag.name + ".redirect.liquid",
+          "templates/page.my-FAQ-Template-2." +
+          tag.name.replace(/\s+/g, "") +
+          ".redirect.liquid",
         value: ` 
         <div class="page-width">
         {{'faq2.css' | asset_url | stylesheet_tag}}
@@ -229,6 +231,30 @@ export function FAQTemplate2Redirects(tag) {
       </div>
       
           `
+      }
+    })
+  })
+    .then(response => response.json())
+    .then(json => console.log(json.body));
+
+  return null;
+}
+
+export function FAQTemplate2Pages(tag) {
+  var fetchUrl = "/api/pages";
+  var method = "Post";
+  fetch(fetchUrl, {
+    method: method,
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      page: {
+        title: tag.name,
+        body_html: "",
+        template_suffix:
+          "my-FAQ-Template-2." + tag.name.replace(/\s+/g, "") + ".redirect",
+        handle: tag.name.replace(/\s+/g, "")
       }
     })
   })

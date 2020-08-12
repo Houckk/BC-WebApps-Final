@@ -45,7 +45,26 @@ export default function QandA(props) {
     }
     const [firstQuestion] = questions.filter(d => d.id == draggableId);
     const Tag = tags.filter(d => d.id == destination.droppableId);
-    if (source.droppableId != destination.droppableId) {
+    if (destination.droppableId == "questionBank") {
+      console.log(questions);
+      console.log(draggableId);
+      console.log(questions.map(q => q.id));
+      console.log(questions.filter(q => q.id == draggableId));
+      console.log(questions.filter(q => q.id == draggableId)[0].questionBank);
+      questions
+        .filter(q => q.id == draggableId)[0]
+        .questionBank.splice(0, 1, 1);
+      tags
+        .filter(tag => tag.id == source.droppableId)[0]
+        .questionIds.splice(source.index, 1);
+      //Tag[0].questionIds.splice(source.index, 1);
+      setResetGlobal(time);
+      return;
+    }
+    if (
+      source.droppableId != destination.droppableId &&
+      destination.droppableId != "questionBank"
+    ) {
       console.log("else if");
       const [newQuestion] = questions.filter(d => d.id == draggableId);
       const newQuestions = Tag[0].questionIds.splice(
