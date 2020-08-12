@@ -54,7 +54,7 @@ export default function FAQTemplate3(tags, photoUrls, photoTypes) {
                   </div>
                   
                   <div class="col4">
-                    <div id="Shipping" class="questions revealed">
+                    <div id=Shipping class="questions revealed">
                       <ol class="plain-list">
 
                       ${tags[0].questionIds

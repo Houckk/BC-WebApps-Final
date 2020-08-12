@@ -10,6 +10,7 @@ import session from "koa-session";
 import * as handlers from "./handlers/index";
 import * as firebase from "firebase";
 import "firebase/database";
+//import React, { useState } from "react";
 
 var bodyParser = require("koa-bodyparser"); //import {GetShopUrl} from "./../pages/Page-Templates/GraphQLTest"
 
@@ -27,6 +28,14 @@ const config = {
 firebase.initializeApp(config);
 var db = firebase.firestore();
 const auth = firebase.auth();
+
+//const [shopifyToken, setShopifyToken] = useState("");
+
+var shopifyToken = "";
+
+// function changeToken(token){
+//   setShopifyToken(token)
+// }
 
 function createOrUpdateAccessToken(storeUrl, token) {
   var allStores = db.collection("stores");
@@ -153,6 +162,8 @@ app.prepare().then(() => {
 
         console.log("ServerShop:", shop);
         console.log("Server Access Token:", accessToken);
+        //changeToken(accessToken);
+        shopifyToken = accessToken;
         createOrUpdateAccessToken(shop, accessToken);
         ctx.cookies.set("shopOrigin", shop, {
           httpOnly: false,
@@ -281,22 +292,37 @@ app.prepare().then(() => {
     const user = {
       email
     };
+    console.log("Current Shopify Token: ", shopifyToken);
     auth.createUserWithEmailAndPassword(email, password).then(() => {
-      db.collection("users").add(user);
+      //db.collection("users").add(user);
+      db.collection("users")
+        .doc(email)
+        .set({
+          email: email,
+          accessToken: shopifyToken,
+          tags: []
+        });
     });
-    server.context.client = await handlers.createClient(shop, accessToken);
-    await handlers.getSubscriptionUrl(ctx);
+    ctx.set("Content-Type", "text/plain");
+    //server.context.client = await handlers.createClient(shop, accessToken);
+    //await handlers.getSubscriptionUrl(ctx);
     ctx.body = "success";
   });
   router.put("/api/updateTags", async ctx => {
     const tags = ctx.request.body.tags;
     const user = ctx.request.body.user;
+    var email = ctx.request.body.email;
+    console.log("Email: ", email);
     console.log(tags);
     console.log("user: " + user);
+    //await db.collection("users").doc(user).update(tags);
     await db
       .collection("users")
-      .doc(user)
-      .set(tags);
+      .doc(email)
+      .update({
+        accessToken: shopifyToken,
+        tags: tags
+      });
     ctx.body = "success";
   });
   router.put("/api/getTags", async ctx => {
