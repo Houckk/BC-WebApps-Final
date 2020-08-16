@@ -45,7 +45,6 @@ export default function DropZoneWithImageFileUpload(props) {
       };
       arrayOfPhotoTypes.push(files[i].name);
     }
-    console.log("Photos", arrayOfPhotoUrls);
     props.photos(arrayOfPhotoUrls, arrayOfPhotoTypes);
   }, [files]);
 

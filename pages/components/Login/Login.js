@@ -42,7 +42,6 @@ export default function Login() {
       .then(response => response.json())
       .then(data => {
         setLoading(false);
-        console.log(data);
         if (data.status == "success") {
           setCurrentPage("main");
           setCurrentUser(data.user);
@@ -54,7 +53,11 @@ export default function Login() {
             body: JSON.stringify({ email: email })
           })
             .then(response => response.json())
-            .then(data => setTags(data.tags));
+            .then(data => {
+              if (data.tags) {
+                setTags(data.tags.tags);
+              }
+            });
         } else {
           setError(
             "The email or password entered is incorrect. Please try again or reset your password."

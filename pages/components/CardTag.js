@@ -47,12 +47,10 @@ export default function CardTag() {
   let { setTags, tags, removeTag, currentUser, questions, addTag } = useContext(
     StoreContext
   );
-  tags.map(d => "logging tags: " + tags.id);
 
   const [active, setActive] = useState(false);
 
   const toggleActive = useCallback(() => setActive(active => !active), []);
-
   const toastContent =
     "Your FAQ page is being built! Publish your new page by following our guide or simply create a new page with the extension page.my-FAQ-" +
     userSelectedTemplate +

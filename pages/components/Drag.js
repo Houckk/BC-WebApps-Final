@@ -4,14 +4,11 @@ import React from "react";
 import Column from "./Column";
 
 export default function Drag() {
-  console.log("log: " + initialData.columnOrder);
-
   return initialData.columnOrder.map(columnId => {
     const column = initialData.columns.filter(column => column.id === columnId);
     const questions = initialData.questions.filter(
       question => question.id === column.id
     );
-    console.log("column" + column);
 
     <Column key={column.id} column={column} questions={questions} />;
   });

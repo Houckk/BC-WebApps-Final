@@ -16,11 +16,6 @@ export const registerWebhooks = async (
   });
 
   if (registration.success) {
-    console.log("Successfully registered webhook!");
   } else {
-    console.log(
-      "Failed to register webhook",
-      registration.result.data.webhookSubscriptionCreate
-    );
   }
 };

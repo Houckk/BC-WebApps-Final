@@ -48,49 +48,34 @@ function createOrUpdateAccessToken(storeUrl, token) {
         accessToken: token,
         url: storeUrl
       })
-      .then(function() {
-        console.log("New document written with ID: ", storeUrl);
-      })
-      .catch(function(error) {
-        console.error("Error adding document: ", error);
-      });
+      .then(function() {})
+      .catch(function(error) {});
   } else {
     var docRef = db.collection("stores").doc(storeUrl);
     docRef
       .update({
         accessToken: token
       })
-      .then(function() {
-        console.log("Document successfully updated!");
-      })
+      .then(function() {})
       .catch(function(error) {
         // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
       });
   }
 }
 
 async function GetAccessToken(shopUrl) {
-  console.log("GetAccessToken is Called: ", shopUrl);
   var docRef = await db
     .collection("stores")
     .doc(shopUrl)
     .get()
     .then(function(doc) {
       if (doc.exists) {
-        console.log("YAYYYY Document Exists!!!");
-        console.log("Document data:", doc.data());
-        console.log("Doc Data Token", doc.data().accessToken);
         return doc.data().accessToken; //return 'ttesting'
       } else {
         // doc.data() will be undefined in this case
-        console.log("No such document!");
       }
     })
-    .catch(function(error) {
-      console.log("Error getting document:", error);
-    });
-  console.log("DocRef Value", docRef);
+    .catch(function(error) {});
   return docRef;
 }
 
@@ -104,24 +89,17 @@ function createOrUpdateThemeID(storeUrl, themeID) {
       .set({
         themeID: themeID
       })
-      .then(function() {
-        console.log("New document written with ID: ", storeUrl);
-      })
-      .catch(function(error) {
-        console.error("Error adding document: ", error);
-      });
+      .then(function() {})
+      .catch(function(error) {});
   } else {
     var docRef = db.collection("stores").doc(storeUrl);
     docRef
       .update({
         themeID: themeID
       })
-      .then(function() {
-        console.log("Document successfully updated!");
-      })
+      .then(function() {})
       .catch(function(error) {
         // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
       });
   }
 }
@@ -160,8 +138,6 @@ app.prepare().then(() => {
         //Redirect to shop upon auth
         const { shop, accessToken } = ctx.session; //TestFunction(shop,accessToken)
 
-        console.log("ServerShop:", shop);
-        console.log("Server Access Token:", accessToken);
         //changeToken(accessToken);
         shopifyToken = accessToken;
         createOrUpdateAccessToken(shop, accessToken);
@@ -184,17 +160,14 @@ app.prepare().then(() => {
   server.use(bodyParser());
   router.post("/api/pages", async ctx => {
     try {
-      console.log("Inside of Try"); //uncomment the top line to see the error, the bottom one to test the code
       //const storeUrl = await GetShopUrl()
 
       const storeUrl = "bc-webapps-final.myshopify.com";
-      console.log("Store's Url: ", storeUrl); //console.log(ctx);
-      //console.log(req.body);
 
       const shopOrigin = await GetAccessToken("bc-webapps-final.myshopify.com");
       var myHeaders = new Headers();
       myHeaders.append("X-Shopify-Access-Token", shopOrigin);
-      myHeaders.append("Content-Type", "application/json"); //console.log(ctx.request.body)
+      myHeaders.append("Content-Type", "application/json");
 
       var raw = JSON.stringify(ctx.request.body);
       var requestOptions = {
@@ -206,20 +179,13 @@ app.prepare().then(() => {
       fetch(
         "https://bc-webapps-final.myshopify.com/admin/api/2020-04/pages.json",
         requestOptions
-      )
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log("error", error));
-    } catch (err) {
-      console.log("Error in Api Call:", err);
-    }
+      ).then(response => response.text());
+    } catch (err) {}
   }); //Template routes
 
   router.get("/liquid/all_themes", async ctx => {
     try {
-      console.log("Inside of Try");
       const storeUrl = "bc-webapps-final.myshopify.com";
-      console.log("Store's Url: ", storeUrl);
       const shopOrigin = await GetAccessToken("bc-webapps-final.myshopify.com");
       const results = await fetch(
         "https://bc-webapps-final.myshopify.com/admin/api/2020-04/themes.json",
@@ -231,7 +197,6 @@ app.prepare().then(() => {
       )
         .then(response => response.json())
         .then(json => {
-          console.log("Parsed Get Response", json);
           var i;
           var currentThemeID = [];
 
@@ -251,23 +216,18 @@ app.prepare().then(() => {
         status: "success",
         data: results
       };
-    } catch (err) {
-      console.log("Error in Api Call:", err);
-    }
+    } catch (err) {}
   });
   router.put("/liquid/new_template", async ctx => {
     try {
-      console.log("Inside of Try Put of New Template"); //uncomment the top line to see the error, the bottom one to test the code
       //const storeUrl = await GetShopUrl()
 
       const storeUrl = "bc-webapps-final.myshopify.com";
-      console.log("Store's Url: ", storeUrl);
       const shopOrigin = await GetAccessToken("bc-webapps-final.myshopify.com");
       var myHeaders = new Headers();
       myHeaders.append("X-Shopify-Access-Token", shopOrigin);
       myHeaders.append("Content-Type", "application/json");
       var raw = JSON.stringify(ctx.request.body);
-      console.log("Raw", raw);
       var requestOptions = {
         method: "PUT",
         headers: myHeaders,
@@ -277,22 +237,15 @@ app.prepare().then(() => {
       fetch(
         "https://bc-webapps-final.myshopify.com/admin/api/2020-04/themes/94604886061/assets.json",
         requestOptions
-      )
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log("error", error));
-    } catch (err) {
-      console.log("Error in Api Call:", err);
-    }
+      ).then(response => response.text());
+    } catch (err) {}
   });
   router.put("/api/signup", async ctx => {
-    console.log(ctx.request.body.email);
     var email = ctx.request.body.email;
     var password = ctx.request.body.password;
     const user = {
       email
     };
-    console.log("Current Shopify Token: ", shopifyToken);
     await auth
       .createUserWithEmailAndPassword(email, password)
       .then(async () => {
@@ -327,7 +280,6 @@ app.prepare().then(() => {
   });
   router.put("/api/getTags", async ctx => {
     const user = ctx.request.body.email;
-    console.log("user: " + user);
     var data;
     await db
       .collection("users")
@@ -371,7 +323,5 @@ app.prepare().then(() => {
   });
   server.use(router.routes());
   server.use(router.allowedMethods());
-  server.listen(port, () => {
-    console.log(`> Ready on http://localhost:${port}`);
-  });
+  server.listen(port, () => {});
 });

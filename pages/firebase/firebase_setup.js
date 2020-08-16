@@ -2,7 +2,6 @@ import * as firebase from "firebase";
 import "firebase/database";
 
 export default function AccessDatabase() {
-  console.log("FIREBASE_FILE");
   const firebaseConfig = {
     apiKey: process.env.API_KEY_FIREBASE,
     authDomain: process.env.AUTH_DOMAIN_FIREBASE,
@@ -27,26 +26,19 @@ export default function AccessDatabase() {
     .get()
     .then(function(doc) {
       if (doc.exists) {
-        console.log("Document data:", doc.data());
       } else {
         // doc.data() will be undefined in this case
-        console.log("No such document!");
       }
     })
-    .catch(function(error) {
-      console.log("Error getting document:", error);
-    });
+    .catch(function(error) {});
 
   docRef
     .update({
       template_selected: 3
     })
-    .then(function() {
-      console.log("Document successfully updated!");
-    })
+    .then(function() {})
     .catch(function(error) {
       // The document probably doesn't exist.
-      console.error("Error updating document: ", error);
     });
 
   //End of Mock changes to the Store

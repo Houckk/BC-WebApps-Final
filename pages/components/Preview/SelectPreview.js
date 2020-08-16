@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Button, Collapsible } from "@shopify/polaris";
 import Template4Preview from "./Template4Preview";
+import Template5Preview from "./Template5Preview";
 
 export default function SelectPreview(props) {
   const userSelectedTemplate = props.userSelectedTemplate;
@@ -16,6 +17,8 @@ export default function SelectPreview(props) {
         onClick={handleToggle}
         ariaExpanded={active}
         ariaControls="basic-collapsible"
+        primary
+        fullWidth
       >
         Preview
       </Button>
@@ -30,7 +33,9 @@ export default function SelectPreview(props) {
         {userSelectedTemplate == "Template-4" && (
           <Template4Preview tags={tags} />
         )}
-        {/* // {userSelectedTemplate == "Template-5" && <Template5Preview tags = {tags}/>} */}
+        {userSelectedTemplate == "Template-5" && (
+          <Template5Preview tags={tags} />
+        )}
       </Collapsible>
     </div>
   );

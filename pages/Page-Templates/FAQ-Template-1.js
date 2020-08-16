@@ -61,9 +61,7 @@ export default function FAQTemplate1(tags) {
         `
       }
     })
-  })
-    .then(response => response.json())
-    .then(json => console.log(json.body));
+  }).then(response => response.json());
   return null;
 }
 
@@ -166,9 +164,7 @@ export function FAQTemplate1CSS() {
         `
       }
     })
-  })
-    .then(response => response.json())
-    .then(json => console.log(json.body));
+  }).then(response => response.json());
   return null;
 }
 
@@ -202,8 +198,6 @@ export function FAQTemplate1JS() {
         `
       }
     })
-  })
-    .then(response => response.json())
-    .then(json => console.log(json.body));
+  }).then(response => response.json());
   return null;
 }

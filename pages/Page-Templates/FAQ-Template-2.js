@@ -56,9 +56,7 @@ export default function FAQTemplate2(tags) {
         `
       }
     })
-  })
-    .then(response => response.json())
-    .then(json => console.log(json.body));
+  }).then(response => response.json());
   return null;
 }
 
@@ -155,9 +153,7 @@ export function FAQTemplate2CSS() {
         `
       }
     })
-  })
-    .then(response => response.json())
-    .then(json => console.log(json.body));
+  }).then(response => response.json());
   return null;
 }
 
@@ -233,9 +229,7 @@ export function FAQTemplate2Redirects(tag) {
           `
       }
     })
-  })
-    .then(response => response.json())
-    .then(json => console.log(json.body));
+  }).then(response => response.json());
 
   return null;
 }
@@ -257,9 +251,7 @@ export function FAQTemplate2Pages(tag) {
         handle: tag.name.replace(/\s+/g, "")
       }
     })
-  })
-    .then(response => response.json())
-    .then(json => console.log(json.body));
+  }).then(response => response.json());
 
   return null;
 }

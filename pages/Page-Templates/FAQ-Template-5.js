@@ -86,9 +86,7 @@ export default function FAQTemplate5JS(tags) {
         `
       }
     })
-  })
-    .then(response => response.json())
-    .then(json => console.log(json.body));
+  }).then(response => response.json());
   return null;
 }
 

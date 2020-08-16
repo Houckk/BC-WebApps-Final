@@ -155,9 +155,7 @@ export default function FAQTemplate3(tags, photoUrls, photoTypes) {
         `
       }
     })
-  })
-    .then(response => response.json())
-    .then(json => console.log(json.body));
+  }).then(response => response.json());
   return null;
 }
 
@@ -361,9 +359,7 @@ export function FAQTemplate3CSS() {
         `
       }
     })
-  })
-    .then(response => response.json())
-    .then(json => console.log(json.body));
+  }).then(response => response.json());
   return null;
 }
 
@@ -393,16 +389,13 @@ for (var i = 0; i < listItem.length; i++) {
   
   	var selectedElement2 = document.getElementsByClassName("list list-active");
   
-  	console.log("Selected Element: ", selectedElement);
-  	console.log("Selected Element2: ", selectedElement2);
+
   
   	var selectedDiv = document.getElementById(selectedElement);
   
-  	console.log("Selected Div: ", selectedDiv);
   
   	
 	var listItemQuestions = document.getElementsByClassName("questions");
-  	console.log("List Items Grabbed: ", listItemQuestions);
 	for (var i = 0; i < listItemQuestions.length; i++) {
   		listItemQuestions[i].className = "questions hidden";
     }
@@ -414,9 +407,7 @@ for (var i = 0; i < listItem.length; i++) {
         `
       }
     })
-  })
-    .then(response => response.json())
-    .then(json => console.log(json.body));
+  }).then(response => response.json());
   return null;
 }
 
@@ -434,8 +425,6 @@ export function FAQTemplate3Pictures(pictureUrls, pictureTypes) {
         attachment: pictureUrls
       }
     })
-  })
-    .then(response => response.json())
-    .then(json => console.log(json.body));
+  }).then(response => response.json());
   return null;
 }

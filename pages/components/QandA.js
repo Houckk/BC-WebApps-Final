@@ -46,11 +46,6 @@ export default function QandA(props) {
     const [firstQuestion] = questions.filter(d => d.id == draggableId);
     const Tag = tags.filter(d => d.id == destination.droppableId);
     if (destination.droppableId == "questionBank") {
-      console.log(questions);
-      console.log(draggableId);
-      console.log(questions.map(q => q.id));
-      console.log(questions.filter(q => q.id == draggableId));
-      console.log(questions.filter(q => q.id == draggableId)[0].questionBank);
       questions
         .filter(q => q.id == draggableId)[0]
         .questionBank.splice(0, 1, 1);
@@ -65,7 +60,6 @@ export default function QandA(props) {
       source.droppableId != destination.droppableId &&
       destination.droppableId != "questionBank"
     ) {
-      console.log("else if");
       const [newQuestion] = questions.filter(d => d.id == draggableId);
       const newQuestions = Tag[0].questionIds.splice(
         destination.index,
@@ -85,8 +79,6 @@ export default function QandA(props) {
       }
     } else {
       if (source.droppableId == "questionBank") {
-        console.log("incoming from question bank");
-
         questions
           .filter(q => q.id == draggableId)[0]
           .questionBank.splice(0, 1, 0);
@@ -109,10 +101,8 @@ export default function QandA(props) {
   }
 
   function addToQuestions(question) {
-    console.log(tags);
     setQuestions(questions.concat(question));
     const updated = { tags: tags };
-    console.log(updated);
     fetch("/api/updateTags", {
       method: "PUT",
       headers: {
@@ -145,7 +135,6 @@ export default function QandA(props) {
         <QuestionBank />
 
         <Card.Section title="Your categories">
-          {tags.map(tag => console.log(tag.questionIds))}
           {tags.map(tag => (
             <Column
               key={tag.id}

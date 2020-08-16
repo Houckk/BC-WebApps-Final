@@ -64,9 +64,7 @@ export default function FAQTemplate4JS(tags) {
         `
       }
     })
-  })
-    .then(response => response.json())
-    .then(json => console.log(json.body));
+  }).then(response => response.json());
   return null;
 }
 
