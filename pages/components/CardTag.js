@@ -175,10 +175,6 @@ export default function CardTag() {
           __________________________
           <br />
           {photoUrls}
-          <SelectPreview
-            userSelectedTemplate={userSelectedTemplate}
-            tags={tags}
-          />
         </Card.Section>
 
         <Card.Section title="testing">
