@@ -6,6 +6,8 @@ export default () => (
   <Carousel autoPlay>
     <div>
       <img src={"./PreviewImages/Faq1.png"} />
+      {/* <img src={require("./PreviewImages/Faq1.png")} /> */}
+      {/* <img src={Faq1} /> */}
       <p className="legend">FAQ Template 1</p>
     </div>
     <div>
