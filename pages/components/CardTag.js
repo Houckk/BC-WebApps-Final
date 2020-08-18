@@ -27,12 +27,12 @@ import FAQTemplate3, {
   FAQTemplate3CSS,
   FAQTemplate3Pictures
 } from "../Page-Templates/FAQ-Template-3";
-import SelectPreview from "./Preview/SelectPreview";
-//import {GetShopUrl} from './../Page-Templates/GraphQLTest'
+import Carousel from "./Carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import css from "./CardTag.module.css";
 
 export default function CardTag() {
   const [tagValue, setTagValue] = useState("");
-  // const [listOfTags, setListOfTags] = useState([]);
   const [isTagButtonClicked, setTagButtonClicked] = useState(0);
 
   const [userSelectedTemplate, setUserSelectedTemplate] = useState(
@@ -61,9 +61,6 @@ export default function CardTag() {
   const toastMarkup = active ? (
     <Toast content={toastContent} onDismiss={toggleActive} duration={10000} />
   ) : null;
-  // useEffect(() => {
-  //   setListOfTags(oldTagArray => [...oldTagArray, tagValue]);
-  // }, [isTagButtonClicked]);
 
   function handlePhotoUrls(photos, types) {
     setPhotoUrls(photos);
@@ -125,7 +122,6 @@ export default function CardTag() {
 
     toggleActive();
   }
-
   return (
     <Frame>
       <Card title="Just Fill Out our Form and We will build your FAQ Page">
@@ -160,8 +156,6 @@ export default function CardTag() {
 
         <QandA />
 
-        <Card.Section title="Drag Your Questions from above into the Corresponding Category below"></Card.Section>
-
         <Card.Section title="Preview Templates">
           <SelectedTemplate template={handleTemplateChange} />
           __________________________
@@ -169,22 +163,26 @@ export default function CardTag() {
           Template Selected: {userSelectedTemplate}
           <br />
           {provideUserMessage}
-          <DropZoneWithImageFileUpload
-            selectedTemplate={userSelectedTemplate}
-            photos={handlePhotoUrls}
-            url={photoUrls}
-          />
+          <div className={css.row}>
+            <div className={css.col}>
+              <DropZoneWithImageFileUpload
+                selectedTemplate={userSelectedTemplate}
+                photos={handlePhotoUrls}
+                url={photoUrls}
+              />
+            </div>
+            <div className={css.col}>
+              <Carousel />
+            </div>
+          </div>
           __________________________
           <br />
           {photoUrls}
-          <SelectPreview
-            userSelectedTemplate={userSelectedTemplate}
-            tags={tags}
-          />
         </Card.Section>
 
         <Card.Section title="testing">
           <Button onClick={handleButton}>Save Questions</Button>
+          {toastMarkup}
           {/* <GetPages /> */}
           {/* <GetShopUrl/> */}
         </Card.Section>

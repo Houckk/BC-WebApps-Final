@@ -1,0 +1,9 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.col {
+  flex-basis: 50%;
+  text-align: center;
+}
